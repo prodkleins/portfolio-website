@@ -28,15 +28,13 @@ function initApp() {
     highlightCurrentPage();
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    if (!sessionStorage.getItem('capybaraShown')) {
-        sessionStorage.setItem('capybaraShown', 'true');
+function showCapybara() {
+    document.body.style.overflow = 'hidden';
+    document.body.classList.add('capybara-loading');
 
-        document.body.classList.add('capybara-loading');
-
-        const loader = document.createElement('div');
-        loader.id = 'capybara-loader';
-        loader.innerHTML = `
+    const loader = document.createElement('div');
+    loader.id = 'capybara-loader';
+    loader.innerHTML = `
 <div class="capybaraloader">
   <div class="capybara">
     <div class="capyhead">
@@ -62,15 +60,24 @@ document.addEventListener('DOMContentLoaded', () => {
 </div>
     `;
 
-        document.body.appendChild(loader);
+    document.body.appendChild(loader);
 
+    // таймер скрытия
+    setTimeout(() => {
+        loader.classList.add('hiding');
+
+        document.body.classList.remove('capybara-loading');
         setTimeout(() => {
-            loader.style.opacity = '0';
-            setTimeout(() => {
-                loader.remove();
-                document.body.classList.remove('capybara-loading');
-            }, 500);
-        }, 2000);
+            loader.remove();
+            document.body.style.overflow = '';
+        }, 500);
+    }, 2000);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (!sessionStorage.getItem('capybaraShown')) {
+        sessionStorage.setItem('capybaraShown', 'true');
+        showCapybara();
     }
 });
 
