@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Contact - kleins portfolio</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo-box">
+            <!-- <img src="logo.png" alt="Logo"> -->
+        </div>
+        <div class="navbar-center">
+            <div class="navbar-buttons">
+                <a href="index.html"><button id="nav-home">Home</button></a>
+                <a href="mywork.html"><button id="nav-mywork">My Work</button></a>
+                <a href="contact.html"><button id="nav-contact">Contact</button></a>
+            </div>
+        </div>
+        <div class="navbar-lang-dropdown">
+            <button class="lang-select" onclick="toggleDropdown()" id="lang-current">EN</button>
+            <div class="lang-dropdown" id="lang-dropdown">
+                <button onclick="selectLang(currentLang === 'en' ? 'ru' : 'en')" id="lang-alt">RU</button>
+            </div>
+        </div>
+    </div>
+    <div class="content">
+        <h1>Contact</h1>
+    </div>
+</body>
+</html>

@@ -3,21 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <title>kleins portfolio</title>
-    <style>
-        body {
-            display: flex;
-            height: 100vh;
-            margin: 0;
-            justify-content: center;
-            align-items: center;
+    <link rel="stylesheet" href="style.css">
+    <script>
+        let langData = {};
+        let currentLang = "en";
+
+        async function loadLangData() {
+            const response = await fetch('lang.json');
+            langData = await response.json();
+            setLang(currentLang);
+            highlightCurrentPage();
         }
-        h1 {
-            font-family: Arial, sans-serif;
-            font-size: 3rem;
+
+        function setLang(lang) {
+            currentLang = lang;
+            if (!langData[lang]) return;
+            document.getElementById("nav-home").textContent = langData[lang].home;
+            document.getElementById("nav-mywork").textContent = langData[lang].mywork;
+            document.getElementById("nav-contact").textContent = langData[lang].contact;
+            document.getElementById("lang-current").textContent = langData[lang].language;
+            document.getElementById("lang-alt").textContent = langData[lang].language_alt;
+            document.querySelector(".content h1").textContent = langData[lang].home;
         }
-    </style>
+
+        function toggleDropdown() {
+            document.getElementById("lang-dropdown").classList.toggle("show");
+        }
+
+        function selectLang(lang) {
+            setLang(lang);
+            document.getElementById("lang-dropdown").classList.remove("show");
+        }
+
+        function highlightCurrentPage() {
+            const page = window.location.pathname.split('/').pop();
+            document.getElementById("nav-home").classList.remove("active-page");
+            document.getElementById("nav-mywork").classList.remove("active-page");
+            document.getElementById("nav-contact").classList.remove("active-page");
+            if (page === "index.html" || page === "") {
+                document.getElementById("nav-home").classList.add("active-page");
+            } else if (page === "mywork.html") {
+                document.getElementById("nav-mywork").classList.add("active-page");
+            } else if (page === "contact.html") {
+                document.getElementById("nav-contact").classList.add("active-page");
+            }
+        }
+
+        window.onload = loadLangData;
+        window.onclick = function(event) {
+            if (!event.target.matches('.lang-select')) {
+                const dropdown = document.getElementById("lang-dropdown");
+                if (dropdown && dropdown.classList.contains('show')) {
+                    dropdown.classList.remove('show');
+                }
+            }
+        };
+    </script>
 </head>
 <body>
-    <h1>wip</h1>
+    <div class="navbar">
+        <div class="logo-box">
+            <!-- <img src="logo.png" alt="Logo"> -->
+        </div>
+        <div class="navbar-center">
+            <div class="navbar-buttons">
+                <a href="index.html"><button id="nav-home">Home</button></a>
+                <a href="mywork.html"><button id="nav-mywork">My Work</button></a>
+                <a href="contact.html"><button id="nav-contact">Contact</button></a>
+            </div>
+        </div>
+        <div class="navbar-lang-dropdown">
+            <button class="lang-select" onclick="toggleDropdown()" id="lang-current">EN</button>
+            <div class="lang-dropdown" id="lang-dropdown">
+                <button onclick="selectLang(currentLang === 'en' ? 'ru' : 'en')" id="lang-alt">RU</button>
+            </div>
+        </div>
+    </div>
+    <div class="content">
+        <h1>Home</h1>
+    </div>
 </body>
 </html>
