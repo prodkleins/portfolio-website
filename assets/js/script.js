@@ -28,11 +28,15 @@ function initApp() {
     highlightCurrentPage();
 }
 
-if (!sessionStorage.getItem('capybaraShown')) {
-    document.body.classList.add('capybara-loading');
-    const loader = document.createElement('div');
-    loader.id = 'capybara-loader';
-    loader.innerHTML = `
+document.addEventListener('DOMContentLoaded', () => {
+    if (!sessionStorage.getItem('capybaraShown')) {
+        sessionStorage.setItem('capybaraShown', 'true');
+
+        document.body.classList.add('capybara-loading');
+
+        const loader = document.createElement('div');
+        loader.id = 'capybara-loader';
+        loader.innerHTML = `
 <div class="capybaraloader">
   <div class="capybara">
     <div class="capyhead">
@@ -55,18 +59,24 @@ if (!sessionStorage.getItem('capybaraShown')) {
   <div class="loader">
     <div class="loaderline"></div>
   </div>
-  `;
+</div>
+    `;
 
-    document.body.appendChild(loader);
-    sessionStorage.setItem('capybaraShown', 'true');
+        document.body.appendChild(loader);
 
-    // Hide after 2 seconds
-    setTimeout(() => {
-        document.body.classList.remove('capybara-loading');
-        loader.style.opacity = '0';
-        setTimeout(() => loader.remove(), 500);
-    }, 2000);
-}
+        setTimeout(() => {
+            loader.style.opacity = '0';
+            setTimeout(() => {
+                loader.remove();
+                document.body.classList.remove('capybara-loading');
+            }, 500);
+        }, 2000);
+    }
+});
+
+window.addEventListener('beforeunload', () => {
+    sessionStorage.removeItem('capybaraShown');
+});
 
 function setLang(lang) {
     currentLang = lang;
