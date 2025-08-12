@@ -18,7 +18,7 @@ function initApp() {
     });
 
     document.querySelectorAll('.navbar-buttons a').forEach(link => {
-        link.addEventListener('click', function(e) {
+        link.addEventListener('click', function (e) {
             e.preventDefault();
             navigate(this.getAttribute('href'));
         });
@@ -26,6 +26,46 @@ function initApp() {
 
     setLang(currentLang);
     highlightCurrentPage();
+}
+
+if (!sessionStorage.getItem('capybaraShown')) {
+    document.body.classList.add('capybara-loading');
+    const loader = document.createElement('div');
+    loader.id = 'capybara-loader';
+    loader.innerHTML = `
+<div class="capybaraloader">
+  <div class="capybara">
+    <div class="capyhead">
+      <div class="capyear">
+        <div class="capyear2"></div>
+      </div>
+      <div class="capyear"></div>
+      <div class="capymouth">
+        <div class="capylips"></div>
+        <div class="capylips"></div>
+      </div>
+      <div class="capyeye"></div>
+      <div class="capyeye"></div>
+    </div>
+    <div class="capyleg"></div>
+    <div class="capyleg2"></div>
+    <div class="capyleg2"></div>
+    <div class="capy"></div>
+  </div>
+  <div class="loader">
+    <div class="loaderline"></div>
+  </div>
+  `;
+
+    document.body.appendChild(loader);
+    sessionStorage.setItem('capybaraShown', 'true');
+
+    // Hide after 2 seconds
+    setTimeout(() => {
+        document.body.classList.remove('capybara-loading');
+        loader.style.opacity = '0';
+        setTimeout(() => loader.remove(), 500);
+    }, 2000);
 }
 
 function setLang(lang) {
@@ -41,8 +81,7 @@ function setLang(lang) {
     const path = window.location.pathname;
     let key = 'home';
 
-    if (path === '/mywork/') key = 'mywork';
-    else if (path === '/contact/') key = 'contact';
+    if (path === '/mywork/') key = 'mywork'; else if (path === '/contact/') key = 'contact';
 
     document.getElementById("page-title").textContent = langData[lang][key];
 }
