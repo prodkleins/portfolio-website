@@ -5,28 +5,66 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact - kleins portfolio</title>
     <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/nav-neon.css">
     <link rel="stylesheet" href="../assets/css/capybara.css">
     <script src="../assets/js/script.js" defer></script>
 </head>
 <body>
-<div class="navbar">
-    <div class="logo-box">
-        <!-- <img src="logo.png" alt="Logo"> -->
-    </div>
-    <div class="navbar-center">
-        <div class="navbar-buttons">
-            <a href="/" data-page="home"><button id="nav-home">Home</button></a>
-            <a href="/mywork/" data-page="mywork"><button id="nav-mywork">My Work</button></a>
-            <a href="/contact/" data-page="contact"><button id="nav-contact">Contact</button></a>
+<!-- сетка фона для сайта -->
+<div class="global-grid"></div>
+
+<!-- неоновая обводка (должен быть ПЕРЕД навбаром) -->
+<div class="navbar-neon-container">
+    <div class="nav-glow"></div>
+    <div class="nav-darkBorderBg"></div>
+    <div class="nav-white"></div>
+</div>
+
+<div class="navbar" id="navbar">
+    <!-- поисковая система -->
+    <div class="search-container">
+        <div class="search-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d6d6e6" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+        </div>
+        <input type="text" class="search-input" placeholder="Search...">
+        <div class="search-filter">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d6d6e6" stroke-width="2">
+                <path d="M4 6h16M4 12h16M4 18h7"></path>
+            </svg>
         </div>
     </div>
+
+    <!-- центральная навигация -->
+    <div class="navbar-center">
+        <div class="navbar-buttons">
+            <a href="/" data-page="home">
+                <button class="nav-button" id="nav-home">Home</button>
+            </a>
+            <a href="/mywork/" data-page="mywork">
+                <button class="nav-button" id="nav-mywork">My Work</button>
+            </a>
+            <a href="/contact/" data-page="contact">
+                <button class="nav-button" id="nav-contact">Contact</button>
+            </a>
+        </div>
+    </div>
+
+    <!-- языковой dropdown бар -->
     <div class="navbar-lang-dropdown">
-        <button class="lang-select" id="lang-current">EN</button>
+        <button class="lang-select" id="lang-current">
+            <img src="assets/img/en-flag.svg" alt="EN" width="20" height="20">
+        </button>
         <div class="lang-dropdown" id="lang-dropdown">
-            <button id="lang-alt">RU</button>
+            <button class="lang-option" id="lang-alt">
+                <img src="assets/img/ru-flag.svg" alt="RU" width="20" height="20">
+            </button>
         </div>
     </div>
 </div>
+
 <div class="content">
     <h1 id="page-title">Contact</h1>
 </div>

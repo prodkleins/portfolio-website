@@ -12,16 +12,37 @@ async function loadLangData() {
 }
 
 function initApp() {
-    document.getElementById('lang-current').addEventListener('click', toggleDropdown);
-    document.getElementById('lang-alt').addEventListener('click', () => {
-        selectLang(currentLang === 'en' ? 'ru' : 'en');
-    });
+    const langCurrent = document.getElementById('lang-current');
+    const langAlt = document.getElementById('lang-alt');
+
+    if (langCurrent) {
+        langCurrent.addEventListener('click', function(e) {
+            e.stopPropagation();
+            toggleDropdown();
+        });
+    }
+
+    if (langAlt) {
+        langAlt.addEventListener('click', function(e) {
+            e.stopPropagation();
+            selectLang(currentLang === 'en' ? 'ru' : 'en');
+        });
+    }
 
     document.querySelectorAll('.navbar-buttons a').forEach(link => {
         link.addEventListener('click', function (e) {
             e.preventDefault();
             navigate(this.getAttribute('href'));
         });
+    });
+
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.navbar-lang-dropdown')) {
+            const dropdown = document.getElementById("lang-dropdown");
+            if (dropdown?.classList.contains('show')) {
+                dropdown.classList.remove('show');
+            }
+        }
     });
 
     setLang(currentLang);
@@ -74,16 +95,22 @@ function showCapybara() {
     }, 2000);
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    if (!sessionStorage.getItem('capybaraShown')) {
-        sessionStorage.setItem('capybaraShown', 'true');
-        showCapybara();
-    }
-});
+function highlightCurrentPage() {
+    const path = window.location.pathname;
 
-window.addEventListener('beforeunload', () => {
-    sessionStorage.removeItem('capybaraShown');
-});
+    ['nav-home', 'nav-mywork', 'nav-contact'].forEach(id => {
+        const element = document.getElementById(id);
+        if (element) element.classList.remove("active-page");
+    });
+
+    if (path === '/' || path === '/index.html' || path.endsWith('/')) {
+        document.getElementById('nav-home').classList.add('active-page');
+    } else if (path.includes('/mywork/') || path.includes('mywork')) {
+        document.getElementById('nav-mywork').classList.add('active-page');
+    } else if (path.includes('/contact/') || path.includes('contact')) {
+        document.getElementById('nav-contact').classList.add('active-page');
+    }
+}
 
 function setLang(lang) {
     currentLang = lang;
@@ -92,40 +119,44 @@ function setLang(lang) {
     document.getElementById("nav-home").textContent = langData[lang].home;
     document.getElementById("nav-mywork").textContent = langData[lang].mywork;
     document.getElementById("nav-contact").textContent = langData[lang].contact;
-    document.getElementById("lang-current").textContent = langData[lang].language;
-    document.getElementById("lang-alt").textContent = langData[lang].language_alt;
 
     const path = window.location.pathname;
     let key = 'home';
-
-    if (path === '/mywork/') key = 'mywork'; else if (path === '/contact/') key = 'contact';
+    if (path.includes('/mywork/') || path.includes('mywork')) key = 'mywork';
+    else if (path.includes('/contact/') || path.includes('contact')) key = 'contact';
 
     document.getElementById("page-title").textContent = langData[lang][key];
+
+    const currentFlag = document.querySelector('#lang-current img');
+    const altFlag = document.querySelector('#lang-alt img');
+
+    if (currentFlag && altFlag) {
+        if (lang === 'en') {
+            currentFlag.src = '../assets/img/en-flag.svg';
+            currentFlag.alt = 'EN';
+            altFlag.src = '../assets/img/ru-flag.svg';
+            altFlag.alt = 'RU';
+        } else {
+            currentFlag.src = '../assets/img/ru-flag.svg';
+            currentFlag.alt = 'RU';
+            altFlag.src = '../assets/img/en-flag.svg';
+            altFlag.alt = 'EN';
+        }
+    }
 }
 
 function toggleDropdown() {
-    document.getElementById("lang-dropdown").classList.toggle("show");
+    const dropdown = document.getElementById("lang-dropdown");
+    if (dropdown) {
+        dropdown.classList.toggle("show");
+        dropdown.style.zIndex = "1000";
+    }
 }
 
 function selectLang(lang) {
     setLang(lang);
-    document.getElementById("lang-dropdown").classList.remove("show");
-}
-
-function highlightCurrentPage() {
-    const path = window.location.pathname;
-
-    ['nav-home', 'nav-mywork', 'nav-contact'].forEach(id => {
-        document.getElementById(id).classList.remove("active-page");
-    });
-
-    if (path === '/') {
-        document.getElementById('nav-home').classList.add('active-page');
-    } else if (path === '/mywork/') {
-        document.getElementById('nav-mywork').classList.add('active-page');
-    } else if (path === '/contact/') {
-        document.getElementById('nav-contact').classList.add('active-page');
-    }
+    const dropdown = document.getElementById("lang-dropdown");
+    if (dropdown) dropdown.classList.remove("show");
 }
 
 function navigate(path) {
@@ -139,13 +170,15 @@ window.addEventListener('popstate', () => {
     highlightCurrentPage();
 });
 
-window.addEventListener('click', (event) => {
-    if (!event.target.matches('.lang-select')) {
-        const dropdown = document.getElementById("lang-dropdown");
-        if (dropdown?.classList.contains('show')) {
-            dropdown.classList.remove('show');
-        }
+document.addEventListener('DOMContentLoaded', () => {
+    if (!sessionStorage.getItem('capybaraShown')) {
+        sessionStorage.setItem('capybaraShown', 'true');
+        showCapybara();
     }
+});
+
+window.addEventListener('beforeunload', () => {
+    sessionStorage.removeItem('capybaraShown');
 });
 
 loadLangData();
