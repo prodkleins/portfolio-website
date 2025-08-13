@@ -1,20 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-base=".">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>kleins portfolio</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&display=swap">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+    <title>Kleins Portfolio</title>
+
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/capybara.css">
     <link rel="stylesheet" href="assets/css/nav-neon.css">
-    <script src="assets/js/script.js" defer></script>
+    <script type="module" src="assets/js/main.js"></script>
 </head>
 <body>
-<!-- сетка фона для сайта -->
 <div class="global-grid"></div>
 
-<!-- неоновая обводка (должен быть ПЕРЕД навбаром) -->
 <div class="navbar-neon-container">
     <div class="nav-glow"></div>
     <div class="nav-darkBorderBg"></div>
@@ -22,38 +20,32 @@
 </div>
 
 <div class="navbar" id="navbar">
-    <!-- поисковая система -->
+    <!-- поиск -->
     <div class="search-container">
         <div class="search-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d6d6e6" stroke-width="2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="#d6d6e6" stroke-width="2" viewBox="0 0 24 24">
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
         </div>
         <input type="text" class="search-input" placeholder="Search...">
         <div class="search-filter">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d6d6e6" stroke-width="2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="#d6d6e6" stroke-width="2" viewBox="0 0 24 24">
                 <path d="M4 6h16M4 12h16M4 18h7"></path>
             </svg>
         </div>
     </div>
 
-    <!-- центральная навигация -->
+    <!-- навигация -->
     <div class="navbar-center">
         <div class="navbar-buttons">
-            <a href="/" data-page="home">
-                <button class="nav-button" id="nav-home">Home</button>
-            </a>
-            <a href="/mywork/" data-page="mywork">
-                <button class="nav-button" id="nav-mywork">My Work</button>
-            </a>
-            <a href="/contact/" data-page="contact">
-                <button class="nav-button" id="nav-contact">Contact</button>
-            </a>
+            <a href="./"><button class="nav-button" id="nav-home">Home</button></a>
+            <a href="mywork/"><button class="nav-button" id="nav-mywork">My Work</button></a>
+            <a href="contact/"><button class="nav-button" id="nav-contact">Contact</button></a>
         </div>
     </div>
 
-    <!-- языковой dropdown бар -->
+    <!-- язык -->
     <div class="navbar-lang-dropdown">
         <button class="lang-select" id="lang-current">
             <img src="assets/img/en-flag.svg" alt="EN" width="20" height="20">
@@ -66,8 +58,6 @@
     </div>
 </div>
 
-<div class="content">
-    <h1 id="page-title">Home</h1>
-</div>
+<div class="content"><h1 id="page-title">Home</h1></div>
 </body>
 </html>

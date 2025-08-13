@@ -19,6 +19,10 @@ body {
     overflow-x: hidden;
 }
 
+.navbar {
+    overflow: visible; /* было hidden */
+}
+
 .navbar-center {
     display: flex;
     justify-content: center;
