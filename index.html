@@ -14,46 +14,42 @@
 <div class="global-grid"></div>
 
 <div class="navbar-neon-container">
-    <div class="nav-glow"></div>
-    <div class="nav-darkBorderBg"></div>
-    <div class="nav-white"></div>
-</div>
+    <div class="white"></div>
+    <div class="border"></div>
+    <div class="darkBorderBg"></div>
+    <div class="glow"></div>
 
-<div class="navbar" id="navbar">
-    <!-- поиск -->
-    <div class="search-container">
-        <div class="search-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="#d6d6e6" stroke-width="2" viewBox="0 0 24 24">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
+    <div class="navbar" id="navbar">
+        <div class="search-container">
+            <div class="search-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="#d6d6e6" stroke-width="2" viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+            </div>
+            <input type="text" class="search-input" placeholder="Search...">
+            <div class="search-filter">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="#d6d6e6" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M4 6h16M4 12h16M4 18h7"></path>
+                </svg>
+            </div>
         </div>
-        <input type="text" class="search-input" placeholder="Search...">
-        <div class="search-filter">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="#d6d6e6" stroke-width="2" viewBox="0 0 24 24">
-                <path d="M4 6h16M4 12h16M4 18h7"></path>
-            </svg>
+        <div class="navbar-center">
+            <div class="navbar-buttons">
+                <a href="./"><button class="nav-button" id="nav-home">Home</button></a>
+                <a href="mywork/"><button class="nav-button" id="nav-mywork">My Work</button></a>
+                <a href="contact/"><button class="nav-button" id="nav-contact">Contact</button></a>
+            </div>
         </div>
-    </div>
-
-    <!-- навигация -->
-    <div class="navbar-center">
-        <div class="navbar-buttons">
-            <a href="./"><button class="nav-button" id="nav-home">Home</button></a>
-            <a href="mywork/"><button class="nav-button" id="nav-mywork">My Work</button></a>
-            <a href="contact/"><button class="nav-button" id="nav-contact">Contact</button></a>
-        </div>
-    </div>
-
-    <!-- язык -->
-    <div class="navbar-lang-dropdown">
-        <button class="lang-select" id="lang-current">
-            <img src="assets/img/en-flag.svg" alt="EN" width="20" height="20">
-        </button>
-        <div class="lang-dropdown" id="lang-dropdown">
-            <button class="lang-option" id="lang-alt">
-                <img src="assets/img/ru-flag.svg" alt="RU" width="20" height="20">
+        <div class="navbar-lang-dropdown">
+            <button class="lang-select" id="lang-current">
+                <img src="assets/img/en-flag.svg" alt="EN" width="20" height="20">
             </button>
+            <div class="lang-dropdown" id="lang-dropdown">
+                <button class="lang-option" id="lang-alt">
+                    <img src="assets/img/ru-flag.svg" alt="RU" width="20" height="20">
+                </button>
+            </div>
         </div>
     </div>
 </div>
