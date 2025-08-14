@@ -4,18 +4,6 @@
 }
 
 /* сетка фона для сайта */
-.global-grid {
-    position: fixed;
-    inset: 0;
-    background-image: linear-gradient(to right, #0f0f10 1px, transparent 1px),
-    linear-gradient(to bottom, #0f0f10 1px, transparent 1px);
-    background-size: 1rem 1rem;
-    background-position: center center;
-    z-index: -2;
-    filter: blur(1px);
-    pointer-events: none;
-}
-
 /* основная панель навигации */
 .navbar {
     position: fixed;
