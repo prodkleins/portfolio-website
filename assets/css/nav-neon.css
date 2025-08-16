@@ -1,10 +1,8 @@
 :root {
     --navbar-radius: 18px; /* радиус панели */
-    --neon-spread: 2px; /* толщина подсветки */
+    --neon-spread: 1px; /* толщина подсветки */
 }
 
-/* сетка фона для сайта */
-/* основная панель навигации */
 .navbar {
     position: fixed;
     left: 50%; transform: translateX(-50%);
@@ -14,9 +12,12 @@
     padding: 0 1rem;
     justify-content: space-between; /* равномерное распределение */
     white-space: nowrap; /* запрет переносов */
-    background: rgba(0, 0, 0, .85);
-    backdrop-filter: blur(10px);
+    background: rgba(0, 0, 0, .95);
+    backdrop-filter: blur(14px) saturate(180%);
+    -webkit-backdrop-filter: blur(14px) saturate(180%);
     overflow: visible;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+    border: none;
 }
 
 /* контейнер подсветки */
@@ -28,7 +29,7 @@
     z-index: 100;
     border-radius: var(--navbar-radius);
     height: 64px;
-    width: 420px; /* стартовая ширина, дальше скрипт синхронизирует */
+    width: 420px;
     min-width: 420px;
     max-width: 90vw;
     overflow: visible;
@@ -68,22 +69,24 @@
     transform: translate(-50%, -50%);
     background-repeat: no-repeat;
     background-position: 0 0;
-    transition: all 2s;
+    transition: transform 1.2s ease, opacity 1.5s ease, filter 0.8s ease;
     z-index: -1;
+    opacity: 0;
+    will-change: transform, opacity, filter;
+    animation: none;
 }
 
 /* белое свечение */
-.navbar-neon-container > .white { filter: blur(2px); }
-
+.navbar-neon-container > .white { filter: blur(1px); }
 .navbar-neon-container > .white::before {
     transform: translate(-50%, -50%) rotate(83deg);
-    filter: brightness(1.4);
+    filter: brightness(2.2);
     background-image: conic-gradient(
         rgba(0, 0, 0, 0) 0%,
-        #a099d8,
+        rgba(255,255,255,0.8),
         rgba(0, 0, 0, 0) 8%,
         rgba(0, 0, 0, 0) 50%,
-        #dfa2da,
+        rgba(255,255,255,1),
         rgba(0, 0, 0, 0) 58%
     );
 }
@@ -93,14 +96,14 @@
 
 .navbar-neon-container > .border::before {
     transform: translate(-50%, -50%) rotate(70deg);
-    filter: brightness(1.3);
+    filter: brightness(1.5);
     background-image: conic-gradient(
-        #1c191c,
-        #402fb5 5%,
-        #1c191c 14%,
-        #1c191c 50%,
-        #cf30aa 60%,
-        #1c191c 64%
+        #000,
+        rgba(255,255,255,0.8) 5%,
+        #000 14%,
+        #000 50%,
+        rgba(255,255,255,0.7) 60%,
+        #000 64%
     );
 }
 
@@ -109,101 +112,127 @@
     transform: translate(-50%, -50%) rotate(82deg);
     background-image: conic-gradient(
         rgba(0, 0, 0, 0),
-        #18116a,
+        #000,
         rgba(0, 0, 0, 0) 10%,
         rgba(0, 0, 0, 0) 50%,
-        #6e1b60,
+        #000,
         rgba(0, 0, 0, 0) 60%
     );
+    filter: brightness(1);
 }
 
 /* основная подсветка */
 .navbar-neon-container > .glow {
-    filter: blur(30px);
-    opacity: .4;
+    filter: blur(16px);
+    opacity: .6;
 }
-
 .navbar-neon-container > .glow::before {
     transform: translate(-50%, -50%) rotate(60deg);
     width: 999px; height: 999px;
     background-image: conic-gradient(
         #000,
-        #402fb5 5%,
+        rgba(255,255,255,0.6) 5%,
         #000 38%,
         #000 50%,
-        #cf30aa 60%,
+        rgba(255,255,255,0.55) 60%,
         #000 87%
     );
+    filter: brightness(1);
 }
 
 /* hover анимации */
-.navbar-neon-container:hover > .darkBorderBg::before { transform: translate(-50%, -50%) rotate(-98deg); }
-
-.navbar-neon-container:hover > .glow::before { transform: translate(-50%, -50%) rotate(-120deg); }
-
-.navbar-neon-container:hover > .white::before { transform: translate(-50%, -50%) rotate(-97deg); }
-
-.navbar-neon-container:hover > .border::before { transform: translate(-50%, -50%) rotate(-110deg); }
-
-/* focus-within */
-.navbar-neon-container:focus-within > .darkBorderBg::before {
-    transform: translate(-50%, -50%) rotate(442deg);
-    transition: all 4s;
+.navbar-neon-container:hover > .darkBorderBg::before {
+    transform: translate(-50%, -50%) rotate(-98deg);
+    opacity: 1;
 }
 
-.navbar-neon-container:focus-within > .glow::before {
-    transform: translate(-50%, -50%) rotate(420deg);
-    transition: all 4s;
+.navbar-neon-container:hover > .glow::before {
+    transform: translate(-50%, -50%) rotate(-120deg);
+    opacity: 1;
+    animation: pulseGlow 2.5s infinite ease-in-out;
 }
 
-.navbar-neon-container:focus-within > .white::before {
-    transform: translate(-50%, -50%) rotate(443deg);
-    transition: all 4s;
+.navbar-neon-container:hover > .white::before {
+    transform: translate(-50%, -50%) rotate(-97deg);
+    opacity: 1;
+    animation: pulseWhite 2.5s infinite ease-in-out;
 }
 
-.navbar-neon-container:focus-within > .border::before {
-    transform: translate(-50%, -50%) rotate(430deg);
-    transition: all 4s;
+.navbar-neon-container:hover > .border::before {
+    transform: translate(-50%, -50%) rotate(-110deg);
+    opacity: 1;
+    animation: pulseBorder 2.5s infinite ease-in-out;
 }
 
-/* поисковый контейнер */
+/* пульсации */
+@keyframes pulseWhite {
+    0%, 100% { filter: brightness(2.0); }
+    50%      { filter: brightness(2.6); }
+}
+@keyframes pulseBorder {
+    0%, 100% { filter: brightness(1.3); }
+    50%      { filter: brightness(1.9); }
+}
+@keyframes pulseGlow {
+    0%, 100% { filter: brightness(1.0); }
+    50%      { filter: brightness(1.35); }
+}
+
 .search-container {
-    display: flex; align-items: center;
-    width: 40px; height: 40px; border-radius: 10px;
+    display: flex;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
     overflow: hidden;
-    transition: width .45s cubic-bezier(.22, 1.3, .36, 1); /* упругость */
-    margin-right: 20px; position: relative;
+    transition: width .45s cubic-bezier(.22, 1.3, .36, 1);
+    margin-right: 20px;
+    position: relative;
     background: rgba(1, 2, 1, .9);
 }
 
 .search-container:hover { width: 300px; }
 
-/* иконка поиска */
 .search-icon {
-    position: absolute; left: 10px; display: flex; align-items: center; justify-content: center; z-index: 2;
+    position: absolute;
+    left: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
 }
 
-/* поле ввода */
 .search-input {
-    background: transparent; border: none; color: #fff; width: 100%; height: 100%;
-    padding: 0 10px 0 40px; font-family: 'Montserrat', sans-serif; font-weight: 400; font-size: .9rem;
-    opacity: 0; transition: opacity .25s ease;
+    background: transparent;
+    border: none;
+    color: #fff;
+    width: 100%;
+    height: 100%;
+    padding: 0 10px 0 40px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    font-size: .9rem;
+    opacity: 0;
+    transition: opacity .25s ease;
 }
 
-/* иконка фильтра справа */
 .search-filter {
-    position: absolute; right: 10px; display: flex; align-items: center; justify-content: center;
-    opacity: 0; transition: opacity .25s ease;
+    position: absolute;
+    right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity .25s ease;
 }
 
 .search-container:hover .search-input,
 .search-container:hover .search-filter { opacity: 1; }
 
-/* кнопки */
 .nav-button {
     background: none;
     border: none;
-    color: #e0d6ff;
+    color: #bfbfbf;
     font-family: 'Montserrat', sans-serif;
     font-weight: 400;
     font-size: 1rem;
@@ -213,18 +242,17 @@
     transition: all .25s ease;
 }
 
-.nav-button:hover { color: #fff; text-shadow: 0 0 8px rgba(200, 180, 255, .8); }
+.nav-button:hover { color: #fff; text-shadow: 0 0 8px rgba(255,255,255,.18); }
 
-.active-page { color: #fff !important; font-weight: 500 !important; text-shadow: 0 0 10px rgba(255, 215, 0, .8) !important; }
+.active-page { color: #fff !important; font-weight: 500 !important; text-shadow: 0 0 10px rgba(255,255,255,.22) !important; }
 
-/* контейнер меню выбора языка */
 .navbar-lang-dropdown {
     position: relative;
     height: 40px;
     width: 40px;
     border-radius: 20px;
     overflow: hidden;
-    background: #000; /* чисто чёрный фон */
+    background: #000;
     transform: translateX(0);
     transition:
         width 0.28s cubic-bezier(0.68, -0.55, 0.27, 1.55),
@@ -238,7 +266,6 @@
     transform: translateX(-3px); /* эффект отскока */
 }
 
-/* активный выбранный флаг */
 .lang-select {
     all: unset;
     position: absolute;
@@ -252,7 +279,6 @@
     cursor: pointer;
 }
 
-/* второй флаг */
 .lang-dropdown {
     all: unset;
     position: absolute;
@@ -268,8 +294,7 @@
     transform: translateX(8px) scale(0.96);
     transition:
         opacity 0.18s ease,
-        transform 0.28s
-        cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        transform 0.28s cubic-bezier(0.68, -0.55, 0.27, 1.55);
 }
 
 .navbar-lang-dropdown:hover .lang-dropdown {
@@ -277,7 +302,6 @@
     transform: translateX(0) scale(1);
 }
 
-/* сброс фона у флага */
 .lang-dropdown *,
 .lang-dropdown:focus,
 .lang-dropdown:active,
@@ -290,7 +314,6 @@
     box-shadow: none !important;
 }
 
-/* размер и курсор флагов */
 .navbar-lang-dropdown img {
     display: block;
     cursor: pointer !important;
@@ -301,11 +324,19 @@
 /* адаптивность для мобилок (WIP) */
 @media (max-width: 768px) {
     .navbar, .navbar-neon-container {
-        flex-wrap: wrap; padding: .5rem; height: auto; min-height: 64px; min-width: 90%;
+        flex-wrap: wrap;
+        padding: .5rem;
+        height: auto;
+        min-height: 64px;
+        min-width: 90%;
     }
 
     .search-container { margin-right: 10px; }
     .search-container:hover { width: 200px; }
 
-    .lang-dropdown { left: 50%; transform: translateX(-50%) translateY(0) scale(.92); width: 40px; }
+    .lang-dropdown {
+        left: 50%;
+        transform: translateX(-50%) translateY(0) scale(.92);
+        width: 40px;
+    }
 }
