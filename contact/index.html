@@ -4,11 +4,14 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
     <title>Contact - Kleins Portfolio</title>
-
-    <link rel="stylesheet" href="../assets/css/style.css">
-    <link rel="stylesheet" href="../assets/css/capybara.css">
-    <link rel="stylesheet" href="../assets/css/nav-neon.css">
-    <script type="module" src="../assets/js/main.js"></script>
+    <script>
+        const v = "1cd1572a";
+        const base = document.documentElement.getAttribute("data-base") || ".";
+        document.write(`<link rel="stylesheet" href="${base}/assets/css/style.css?v=${v}">`);
+        document.write(`<link rel="stylesheet" href="${base}/assets/css/capybara.css?v=${v}">`);
+        document.write(`<link rel="stylesheet" href="${base}/assets/css/nav-neon.css?v=${v}">`);
+        document.write(`<script type="module" src="${base}/assets/js/main.js?v=${v}"><\/script>`);
+    </script>
 </head>
 <body>
 <canvas id="stars"></canvas>
