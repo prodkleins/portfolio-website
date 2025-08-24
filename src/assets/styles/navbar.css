@@ -1,0 +1,287 @@
+.navbar {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 1.5rem;
+    gap: 1rem;
+    justify-content: space-between;
+    white-space: nowrap;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(14px) saturate(180%);
+    -webkit-backdrop-filter: blur(14px) saturate(180%);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+    border: none;
+    border-radius: 18px;
+    pointer-events: auto;
+}
+
+/* Центр навигации */
+.navbar-center {
+    display: flex;
+    justify-content: center;
+    flex-grow: 1;
+}
+
+.navbar-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Поисковая строка */
+.search-container {
+    display: flex;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: width 0.45s cubic-bezier(0.22, 1.3, 0.36, 1);
+    position: relative;
+    background: rgba(1, 2, 1, 0.9);
+}
+
+.search-container:hover {
+    width: 300px;
+}
+
+.search-icon {
+    position: absolute;
+    left: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+.search-input {
+    background: transparent;
+    border: none;
+    color: #fff;
+    width: 100%;
+    height: 100%;
+    padding: 0 10px 0 40px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    font-size: 0.9rem;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
+
+.search-filter {
+    position: absolute;
+    right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
+
+.search-container:hover .search-input,
+.search-container:hover .search-filter {
+    opacity: 1;
+}
+
+/* Кнопки навигации */
+.nav-button {
+    background: none;
+    border: none;
+    color: #bfbfbf;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0.5rem 1.2rem;
+    letter-spacing: 0.5px;
+    transition: all 0.25s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.nav-button:hover {
+    color: #fff;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.18);
+}
+
+.nav-button.active-page {
+    color: #fff !important;
+    font-weight: 500 !important;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.22) !important;
+}
+
+/* Выбор языка */
+.navbar-lang-dropdown {
+    position: relative;
+    height: 40px;
+    width: 40px;
+    border-radius: 20px;
+    overflow: hidden;
+    background: #000;
+    transform: translateX(-15px);
+    transition: width 0.28s cubic-bezier(0.68, -0.55, 0.27, 1.55),
+    border-radius 0.28s cubic-bezier(0.68, -0.55, 0.27, 1.55),
+    transform 0.28s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+.navbar-lang-dropdown:hover {
+    width: 80px;
+    border-radius: 24px;
+    transform: translateX(-3px);
+}
+
+.lang-select {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2;
+    background: transparent;
+    border: none;
+    pointer-events: auto;
+}
+
+.lang-dropdown {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateX(8px) scale(0.96);
+    transition: opacity 0.18s ease,
+    transform 0.28s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    z-index: 1;
+}
+
+.navbar-lang-dropdown:hover .lang-dropdown {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+}
+
+.lang-option {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    pointer-events: auto;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Стили для изображений флагов */
+.lang-select img,
+.lang-option img {
+    background: transparent;
+    border-radius: 0;
+    display: block;
+}
+
+/* планшетная адаптация */
+@media (max-width: 768px) {
+    .navbar {
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 0.6rem;
+        border-radius: 20px;
+        gap: 0.4rem;
+        min-height: auto;
+        align-items: center;
+    }
+
+    /* первый ряд - кнопки навигации */
+    .navbar-center {
+        order: 1;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 0.4rem;
+        flex-wrap: wrap;
+    }
+
+    .navbar-buttons {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.25rem 0.5rem;
+    }
+
+    .nav-button {
+        font-size: 0.92rem;
+        padding: 0.35rem 0.65rem;
+        white-space: nowrap;
+    }
+
+    /* второй ряд - поиск и язык*/
+    .search-container {
+        order: 2;
+        margin-right: 0.5rem;
+        display: inline-flex;
+        vertical-align: middle;
+    }
+
+    .navbar-lang-dropdown {
+        order: 3;
+        display: inline-flex;
+        vertical-align: middle;
+    }
+
+    /* скрываем мобильную группу */
+    .navbar-mobile-controls {
+        display: none !important;
+    }
+
+    .search-container:hover {
+        width: 160px;
+    }
+
+    .navbar-lang-dropdown:hover {
+        transform: none;
+    }
+
+    .lang-dropdown {
+        transform: translateX(0) scale(0.92);
+        width: 36px;
+    }
+}
+
+/* для телефончиков */
+@media (max-width: 480px) {
+    .navbar {
+        padding: 0.6rem;
+        gap: 0.6rem;
+        min-height: 100px;
+    }
+
+    .nav-button {
+        font-size: 0.85rem;
+        padding: 0.3rem 0.6rem;
+    }
+
+    .navbar-buttons {
+        gap: 0.4rem;
+    }
+
+    .navbar-mobile-controls {
+        gap: 0.4rem;
+    }
+
+    .navbar-mobile-controls .search-container:hover {
+        width: 160px;
+        transform: translateX(-120px);
+    }
+
+    .navbar-mobile-controls .navbar-lang-dropdown:hover {
+        width: 70px;
+    }
+}

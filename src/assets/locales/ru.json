@@ -1,0 +1,10 @@
+{
+  "navigation": {
+    "home": "Главная",
+    "mywork": "Мои работы",
+    "contact": "Контакты"
+  },
+  "search": {
+    "placeholder": "Поиск..."
+  }
+}

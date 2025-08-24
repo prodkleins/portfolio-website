@@ -1,0 +1,10 @@
+{
+  "navigation": {
+    "home": "Home",
+    "mywork": "My Work",
+    "contact": "Contact"
+  },
+  "search": {
+    "placeholder": "Search..."
+  }
+}
