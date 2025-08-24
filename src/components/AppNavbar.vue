@@ -37,11 +37,11 @@
       </div>
       <div class="navbar-lang-dropdown">
         <button class="lang-select" @click="toggleLocale">
-          <img :src="currentFlag" :alt="currentLocale.toUpperCase()" width="20" height="20">
+          <img :src="currentFlag" :alt="locale" width="20" height="20">
         </button>
         <div class="lang-dropdown">
           <button class="lang-option" @click="toggleLocale">
-            <img :src="alternativeFlag" :alt="alternativeLocale.toUpperCase()" width="20" height="20">
+            <img :src="alternativeFlag" :alt="alternativeLocale" width="20" height="20">
           </button>
         </div>
       </div>
@@ -55,26 +55,22 @@ import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 
 const route = useRoute()
-const { locale, t } = useI18n()
+const { locale } = useI18n()
 
-const currentLocale = computed(() => locale.value)
-const alternativeLocale = computed(() => locale.value === 'en' ? 'ru' : 'en')
-
-const flagCache = {
+const flags = {
   en: '/assets/images/en-flag.svg',
   ru: '/assets/images/ru-flag.svg'
 }
 
-const currentFlag = computed(() => flagCache[locale.value])
-const alternativeFlag = computed(() => flagCache[alternativeLocale.value])
+const alternativeLocale = computed(() => locale.value === 'en' ? 'ru' : 'en')
+const currentFlag = computed(() => flags[locale.value])
+const alternativeFlag = computed(() => flags[alternativeLocale.value])
 
 function toggleLocale() {
-  const newLocale = locale.value === 'en' ? 'ru' : 'en'
-  locale.value = newLocale
-  localStorage.setItem('locale', newLocale)
-
-  if (window.$i18n) {
-    window.$i18n.global.locale.value = newLocale
+  locale.value = (locale.value === 'en' ? 'ru' : 'en')
+  try {
+    localStorage.setItem('locale', locale.value)
+  } catch {
   }
 }
 </script>
