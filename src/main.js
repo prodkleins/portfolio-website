@@ -11,6 +11,12 @@ import './assets/styles/loader.css'
 
 const app = createApp(App)
 
+if (sessionStorage.redirect) {
+    const redirect = sessionStorage.redirect;
+    delete sessionStorage.redirect;
+    router.push(redirect);
+}
+
 app.use(createPinia())
 app.use(router)
 app.use(i18n)
