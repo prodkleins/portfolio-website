@@ -56,17 +56,6 @@ onMounted(() => {
   min-height: 100vh;
 }
 
-.site-background {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, #000000, #090909, #090909, #101010, #000000);
-  z-index: -2;
-  transition: opacity 1s ease-out;
-}
-
 .video-container {
   position: fixed;
   top: 0;

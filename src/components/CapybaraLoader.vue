@@ -61,7 +61,7 @@ const emit = defineEmits(['loaded'])
 const isVisible = ref(true)
 const isHiding = ref(false)
 const minimumLoadTime = 1000 // минимальное время показа лоадера
-const hideDelay = 3000 // время ожидания перед скрытием после загрузки
+const hideDelay = 1000 // время ожидания перед скрытием после загрузки
 
 let loadStartTime = Date.now()
 let allResourcesLoaded = false

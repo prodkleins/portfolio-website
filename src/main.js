@@ -8,13 +8,16 @@ import './assets/styles/base.css'
 import './assets/styles/navbar.css'
 import './assets/styles/navbar-neon.css'
 import './assets/styles/loader.css'
+import './assets/styles/mywork-layout.css'
+import './assets/styles/skeleton.css'
+import './assets/styles/video-card.css'
 
 const app = createApp(App)
 
 if (sessionStorage.redirect) {
-    const redirect = sessionStorage.redirect;
-    delete sessionStorage.redirect;
-    router.push(redirect);
+    const redirect = sessionStorage.redirect
+    delete sessionStorage.redirect
+    router.push(redirect)
 }
 
 app.use(createPinia())

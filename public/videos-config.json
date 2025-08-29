@@ -1,0 +1,84 @@
+{
+  "categories": [
+    {
+      "id": "motion-design",
+      "videos": [
+        {
+          "id": "motion_1",
+          "youtubeId": "NoSOAA9yq6w"
+        },
+        {
+          "id": "motion_2",
+          "youtubeId": "k9DeX9fG2Kk"
+        }
+      ]
+    },
+    {
+      "id": "video-games",
+      "subcategories": [
+        {
+          "id": "cs2",
+          "videos": [
+            {
+              "id": "game_1",
+              "youtubeId": "4KQ3Y7vgL7o"
+            },
+            {
+              "id": "game_2",
+              "youtubeId": "O-xooiCvO_k"
+            },
+            {
+              "id": "game_3",
+              "youtubeId": "AQVlNNgscOk"
+            },
+            {
+              "id": "game_4",
+              "youtubeId": "IlOLAPZghCM"
+            },
+            {
+              "id": "game_5",
+              "youtubeId": "hF1G0kvE7SM"
+            },
+            {
+              "id": "game_6",
+              "youtubeId": "hNOZ8hYDL4Q"
+            }
+          ]
+        },
+        {
+          "id": "tankionline",
+          "videos": [
+            {
+              "id": "tanki_1",
+              "youtubeId": "YaI325d3XSY"
+            },
+            {
+              "id": "tanki_2",
+              "youtubeId": "LkfXxCxOquw"
+            },
+            {
+              "id": "tanki_3",
+              "youtubeId": "JqC0QbfVJTY"
+            },
+            {
+              "id": "tanki_4",
+              "youtubeId": "kiUTcSrqBsY"
+            },
+            {
+              "id": "tanki_5",
+              "youtubeId": "4w2oro7zlVA"
+            },
+            {
+              "id": "tanki_5",
+              "youtubeId": "L5UEAhq_AH4"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "other",
+      "videos": []
+    }
+  ]
+}

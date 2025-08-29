@@ -6,5 +6,18 @@
   },
   "search": {
     "placeholder": "Search..."
+  },
+  "myWork": {
+    "title": "My works",
+    "subtitle": "dudu hadad 2010 kleins longrenglish",
+    "categories": {
+      "motion-design": "Motion Design",
+      "video-games": "Video Games",
+      "other": "Other projects"
+    },
+    "subcategories": {
+      "cs2": "Counter-Strike: 2",
+      "tankionline": "Tanki Online"
+    }
   }
 }

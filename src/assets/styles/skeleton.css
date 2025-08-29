@@ -1,0 +1,150 @@
+/* ===========================================
+   VIDEO CARD SKELETON STYLES
+   =========================================== */
+
+.video-card-skeleton {
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    width: 100%;
+    max-width: 100%;
+}
+
+/* Preview skeleton */
+.skeleton-preview {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    height: 0;
+    background: rgba(255, 255, 255, 0.05);
+    overflow: hidden;
+}
+
+/* Shimmer animation */
+.skeleton-shimmer {
+    position: relative;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 4px;
+    height: 100%;
+    width: 100%;
+}
+
+.skeleton-shimmer::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.15),
+        transparent
+    );
+    animation: shimmer 2s infinite ease-in-out;
+}
+
+.skeleton-shimmer--short {
+    width: 60%;
+}
+
+/* Play button skeleton */
+.skeleton-play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+}
+
+/* Duration skeleton */
+.skeleton-duration {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    width: 40px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+/* Info skeleton */
+.skeleton-info {
+    padding: 1.5rem;
+}
+
+.skeleton-title {
+    height: 1.3rem;
+    margin-bottom: 0.8rem;
+}
+
+.skeleton-description {
+    margin-bottom: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.skeleton-description .skeleton-shimmer {
+    height: 0.95rem;
+}
+
+.skeleton-stats {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.skeleton-stat {
+    width: 60px;
+    height: 0.9rem;
+}
+
+/* Shimmer animation */
+@keyframes shimmer {
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 100%;
+    }
+}
+
+/* ===========================================
+   АДАПТИВНОСТЬ
+   =========================================== */
+
+/* Планшеты */
+@media (max-width: 1024px) {
+    .skeleton-info {
+        padding: 1.2rem;
+    }
+}
+
+/* Мобильные устройства */
+@media (max-width: 768px) {
+    .skeleton-info {
+        padding: 1rem;
+    }
+
+    .skeleton-stats {
+        gap: 1rem;
+    }
+
+    .skeleton-stat {
+        width: 50px;
+    }
+}
+
+/* Производительность */
+@media (prefers-reduced-motion: reduce) {
+    .skeleton-shimmer::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}
