@@ -20,15 +20,17 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted, watch } from 'vue'
 import AppNavbar from './components/AppNavbar.vue'
 import CapybaraLoader from './components/CapybaraLoader.vue'
 
 const showContent = ref(false)
-const videoLoaded = ref(false)
+const videoLoaded = ref(true)
+
+let timeoutId = null
 
 const onLoaderComplete = () => {
-  setTimeout(() => {
+  timeoutId = setTimeout(() => {
     showContent.value = true
   }, 100)
 }
@@ -37,16 +39,28 @@ const onVideoLoaded = () => {
   videoLoaded.value = true
 }
 
+const stopWatcher = watch(showContent, (newValue) => {
+  if (newValue) {
+    document.body.style.overflow = ''
+    stopWatcher()
+  }
+}, { immediate: true })
+
 onMounted(() => {
   document.body.style.overflow = 'hidden'
-  const unwatch = () => {
-    if (showContent.value) {
-      document.body.style.overflow = ''
-    } else {
-      setTimeout(unwatch, 100)
-    }
+})
+
+onUnmounted(() => {
+  if (timeoutId) {
+    clearTimeout(timeoutId)
+    timeoutId = null
   }
-  unwatch()
+
+  if (stopWatcher) {
+    stopWatcher()
+  }
+
+  document.body.style.overflow = ''
 })
 </script>
 
