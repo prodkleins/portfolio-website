@@ -13,9 +13,9 @@
     pointer-events: none;
 }
 
-/* Автоматическое расширение при hover на поиске */
-.navbar:has(.search-container:hover) .navbar-neon-container {
-    width: 580px;
+/* Автоматическое расширение при hover на developer container */
+.navbar:has(.developer-container:hover) .navbar-neon-container {
+    width: 540px;
 }
 
 /* Слои неоновой подсветки */
@@ -177,7 +177,7 @@
         border-radius: 20px;
     }
 
-    .navbar:has(.search-container:hover) .navbar-neon-container {
+    .navbar:has(.developer-container:hover) .navbar-neon-container {
         width: calc(100% - 32px) !important;
     }
 

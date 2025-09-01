@@ -6,21 +6,17 @@
     <div class="glow"></div>
 
     <nav class="navbar" ref="navbar">
-      <div class="search-container" ref="searchContainer">
-        <div class="search-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="#d6d6e6"
-               stroke-width="2" viewBox="0 0 24 24">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
-        </div>
-        <input type="text" class="search-input" :placeholder="$t('search.placeholder')">
-        <div class="search-filter">
+      <div class="developer-container" ref="developerContainer">
+        <div class="developer-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="#d6d6e6"
                stroke-width="2" viewBox="0 0 24 24">
-            <path d="M4 6h16M4 12h16M4 18h7"></path>
+            <polyline points="16 18 22 12 16 6"></polyline>
+            <polyline points="8 6 2 12 8 18"></polyline>
           </svg>
         </div>
+        <a href="https://t.me/aerthion" target="_blank" rel="noopener noreferrer" class="developer-link">
+          developed by lxngren
+        </a>
       </div>
       <div class="navbar-center">
         <div class="navbar-buttons">
