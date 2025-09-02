@@ -16,7 +16,7 @@
           </div>
         </div>
         <div class="text-section">
-          <h1 class="username">Kleins</h1>
+          <h1 class="username">kleins</h1>
           <div class="description-container">
             <span class="description-text" ref="descriptionText"></span>
             <span class="typing-cursor cursor-blink">|</span>
@@ -94,8 +94,8 @@ import TypeIt from 'typeit'
 const descriptionText = ref(null)
 
 const descriptions = [
-  'Motion Design',
-  'Game Editing',
+  'Motion Designer',
+  'Game Editor',
   'Python Developer'
 ]
 
