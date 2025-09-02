@@ -27,7 +27,9 @@
           </div>
         </div>
         <div class="text-section">
-          <h1 class="username">kleins</h1>
+          <Transition name="fade-name" mode="out-in">
+            <h1 class="username" :key="currentName">{{ currentName }}</h1>
+          </Transition>
           <div class="description-container">
             <span class="description-text" ref="descriptionText"></span>
             <span class="typing-cursor cursor-blink">|</span>
@@ -105,21 +107,19 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import TypeIt from 'typeit'
 
 const descriptionText = ref(null)
 const showCopyNotification = ref(false)
 const isFlipped = ref(false)
 
+const currentName = computed(() => (isFlipped.value ? 'Søren' : "kleins"))
+
 let typeitInstance = null
 let notificationTimer = null
 
-const descriptions = [
-  'Motion Designer',
-  'Game Editor',
-  'Python Developer'
-]
+const descriptions = ['Motion Designer', 'Game Editor', 'Developer']
 
 const flipToSecond = () => {
   isFlipped.value = true
@@ -291,6 +291,20 @@ onUnmounted(() => {
   color: #fff;
   margin: 0;
   letter-spacing: 1px;
+}
+
+.fade-name-enter-active,
+.fade-name-leave-active {
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.fade-name-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+.fade-name-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
 }
 
 .description-container {
