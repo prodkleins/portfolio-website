@@ -3,15 +3,26 @@
     <section class="hero-section">
       <div class="hero-content">
         <div class="avatar-section">
-          <div class="avatar-container">
-            <div class="avatar-circle">
-              <img
-                src="/assets/images/avatar.jpg"
-                alt="Avatar"
-                class="avatar-image"
-                loading="lazy"
-                decoding="async"
-              />
+          <div class="avatar-container" @mouseenter="flipToSecond" @mouseleave="flipToFirst">
+            <div class="avatar-circle" :class="{ 'flipped': isFlipped }">
+              <div class="avatar-side avatar-front">
+                <img
+                  src="/assets/images/avatar.jpg"
+                  alt="Avatar"
+                  class="avatar-image"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <div class="avatar-side avatar-back">
+                <img
+                  src="/assets/images/avatar2.jpg"
+                  alt="Avatar 2"
+                  class="avatar-image"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -30,7 +41,6 @@
           </div>
         </div>
       </Transition>
-
       <div class="social-section">
         <div class="social-links">
           <a
@@ -100,6 +110,8 @@ import TypeIt from 'typeit'
 
 const descriptionText = ref(null)
 const showCopyNotification = ref(false)
+const isFlipped = ref(false)
+
 let typeitInstance = null
 let notificationTimer = null
 
@@ -108,6 +120,14 @@ const descriptions = [
   'Game Editor',
   'Python Developer'
 ]
+
+const flipToSecond = () => {
+  isFlipped.value = true
+}
+
+const flipToFirst = () => {
+  isFlipped.value = false
+}
 
 const copyDiscordTag = async () => {
   if (showCopyNotification.value) return
@@ -206,6 +226,7 @@ onUnmounted(() => {
 
 .avatar-section {
   position: relative;
+  perspective: 1000px;
 }
 
 .avatar-container {
@@ -218,17 +239,33 @@ onUnmounted(() => {
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  overflow: hidden;
-  background: #000;
-  border: 2px solid rgba(255, 255, 255, 0.1);
   position: relative;
-  transition: transform 0.3s ease, border-color 0.3s ease;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+  border: 2px solid rgba(255, 255, 255, 0.1);
   contain: layout style paint;
 }
 
-.avatar-section:hover .avatar-circle {
-  transform: scale(1.05);
-  border-color: rgba(255, 255, 255, 0.3);
+.avatar-circle.flipped {
+  transform: rotateY(180deg);
+}
+
+.avatar-side {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  backface-visibility: hidden;
+  background: #000;
+}
+
+.avatar-front {
+  transform: rotateY(0deg);
+}
+
+.avatar-back {
+  transform: rotateY(180deg);
 }
 
 .avatar-image {
@@ -236,6 +273,10 @@ onUnmounted(() => {
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+.avatar-container:hover .avatar-circle {
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .text-section {
@@ -515,7 +556,10 @@ onUnmounted(() => {
     opacity: 1;
   }
 
-  .avatar-circle,
+  .avatar-circle {
+    transition: none;
+  }
+
   .social-link {
     transition: none;
   }
