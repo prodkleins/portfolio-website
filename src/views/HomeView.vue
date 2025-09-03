@@ -59,7 +59,7 @@
             </svg>
           </a>
           <a
-            href="https://t.me/kleins0"
+            href="https://t.me/prodkleins"
             target="_blank"
             rel="noopener noreferrer"
             class="social-link"
