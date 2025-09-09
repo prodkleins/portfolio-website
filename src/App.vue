@@ -17,6 +17,7 @@
       </div>
       <AppNavbar />
       <router-view />
+      <AppFooter />
     </div>
   </div>
 </template>
@@ -24,6 +25,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 import AppNavbar from './components/AppNavbar.vue'
+import AppFooter from './components/AppFooter.vue'
 import CapybaraLoader from './components/CapybaraLoader.vue'
 
 const showContent = ref(false)
