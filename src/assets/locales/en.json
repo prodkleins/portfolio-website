@@ -2,12 +2,15 @@
   "navigation": {
     "home": "Home",
     "mywork": "My Work",
-    "contact": "Contact"
+    "contact": "About"
   },
   "search": {
     "placeholder": "Search..."
   },
-  "business-inquiries": "For business inquiries: {'johansen.soren07@gmail.com'}",
+  "home":{
+    "business-inquiries": "For commissions: {'prodkleins@gmail.com'}",
+    "latest-works": "Latest works"
+  },
   "myWork": {
     "title": "My works",
     "subtitle": "My current & up and coming projects are listed here, i currently lean towards working more with motion design and see a future of further working within this genre",

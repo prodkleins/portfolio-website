@@ -56,7 +56,9 @@
     <!-- Video Info -->
     <div class="video-info">
       <h3 class="video-title">{{ video.title }}</h3>
-      <p class="video-description">{{ video.description }}</p>
+
+      <!-- если передан prop hideDescription -->
+      <p v-if="!hideDescription" class="video-description">{{ video.description }}</p>
 
       <div class="video-stats">
         <StatItem
@@ -122,6 +124,10 @@ const props = defineProps({
     type: Object,
     required: true,
     validator: (video) => video && video.youtubeId && video.title
+  },
+  hideDescription: {
+    type: Boolean,
+    default: false
   }
 });
 

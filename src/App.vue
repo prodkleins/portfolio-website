@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <CapybaraLoader @loaded="onLoaderComplete" />
+    <AppFooter />
     <div :class="['main-content', { 'content-fade-in': !showContent, 'content-fade-in visible': showContent }]">
       <div class="light-leaks-container">
         <div class="light-leak light-leak-1"></div>
@@ -17,7 +18,6 @@
       </div>
       <AppNavbar />
       <router-view />
-      <AppFooter />
     </div>
   </div>
 </template>
@@ -64,6 +64,7 @@ onUnmounted(() => {
 .main-content {
   position: relative;
   min-height: 100vh;
+  padding-bottom: 80px;
 }
 
 .light-leaks-container {
@@ -194,11 +195,11 @@ onUnmounted(() => {
   width: 100%;
   height: 100%;
   background: linear-gradient(135deg,
-  rgba(0, 0, 0, 0.7) 0%,
-  rgba(0, 0, 0, 0.8) 25%,
-  rgba(0, 0, 0, 0.85) 50%,
-  rgba(0, 0, 0, 0.8) 75%,
-  rgba(0, 0, 0, 0.7) 100%);
+  rgba(0, 0, 0, 0.5) 0%,
+  rgba(0, 0, 0, 0.6) 25%,
+  rgba(0, 0, 0, 0.75) 50%,
+  rgba(0, 0, 0, 0.7) 75%,
+  rgba(0, 0, 0, 0.6) 100%);
   z-index: 1;
 }
 
@@ -449,6 +450,12 @@ onUnmounted(() => {
   87% {
     transform: translate(-250px, 300px) scale(1.5);
     opacity: 0.5;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    padding-bottom: 76px;
   }
 }
 

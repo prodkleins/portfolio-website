@@ -3,7 +3,7 @@
     <div class="footer-content">
       <div class="footer-left">
         <span class="gradient-text">
-          {{ $t('business-inquiries') }}
+          {{ $t('home.business-inquiries') }}
         </span>
       </div>
       <div class="carousel-container">
@@ -189,6 +189,7 @@ defineExpose({
   width: 32px;
   height: 32px;
   filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+  -webkit-filter: grayscale(75%)
 }
 
 .footer-right {
@@ -224,6 +225,7 @@ defineExpose({
 
   .footer-left {
     left: 1rem;
+    max-width: calc(100vw - 200px);
   }
 
   .footer-right {
@@ -232,11 +234,17 @@ defineExpose({
 
   .gradient-text {
     font-size: 0.8rem;
+    white-space: normal;
+    line-height: 1.3;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
   }
 
   .carousel-container {
     width: 140px;
     height: 36px;
+    margin-left: 1rem;
   }
 
   .program-icon {
@@ -253,6 +261,7 @@ defineExpose({
 @media (max-width: 480px) {
   .footer-left {
     left: 0.8rem;
+    max-width: calc(45vw - 2rem);
   }
 
   .footer-right {
@@ -261,12 +270,13 @@ defineExpose({
 
   .gradient-text {
     font-size: 0.7rem;
-    white-space: nowrap;
+    line-height: 1.2;
   }
 
   .carousel-container {
     width: 120px;
     height: 32px;
+    margin-left: 1.5rem;
   }
 
   .program-icon {

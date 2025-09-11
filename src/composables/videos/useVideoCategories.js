@@ -1,7 +1,4 @@
-/**
- * TODO: Полный рефакторинг кода, много лишних promise, странная логика (race-condition) в loadCategories и loadCategoryVideos
- */
-import { ref, computed, onMounted, watch, onUnmounted } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import youtubeService from '@/services/youtubeService.js'
 
@@ -134,8 +131,7 @@ class VideoDataManager {
         this.loadingPromises.set(categoryId, loadPromise);
 
         try {
-            const result = await loadPromise;
-            return result;
+            return await loadPromise;
         } finally {
             this.loadingPromises.delete(categoryId);
         }

@@ -1,6 +1,3 @@
-/**
- * TODO: Полный рефакторинг кода, в текущей реализации полно исправленных race-condition, утечек. Но сама логика кода очень плохая, очень много говнокода
- */
 import { ref, watch, onUnmounted } from 'vue'
 import youtubePlayerService from '@/services/youtubePlayerService.js'
 
