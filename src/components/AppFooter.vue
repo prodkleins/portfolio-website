@@ -11,7 +11,7 @@
           <div class="neon-border"></div>
           <div class="neon-glow"></div>
         </div>
-        <div class="carousel-track" :style="{ transform: `translateX(${translateX}px)` }">
+        <div class="carousel-track" ref="carouselTrack">
           <div
             v-for="(icon, index) in duplicatedIcons"
             :key="`${icon.id}-${index}`"
@@ -39,19 +39,15 @@
 </template>
 
 <script setup>
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { computed, ref } from 'vue'
 
-const carouselSpeed = ref(0.4)
+const carouselTrack = ref(null)
 
 const icons = [
   { id: 'ae', src: '/assets/icons/after-effects.svg', alt: 'After Effects' },
   { id: 'blender', src: '/assets/icons/blender.svg', alt: 'Blender' },
   { id: 'vegas', src: '/assets/icons/vegas.svg', alt: 'Vegas Pro' }
 ]
-
-const itemWidth = 60
-const position = ref(0)
-let animationId = null
 
 const duplicatedIcons = computed(() => {
   const copies = 4
@@ -62,43 +58,12 @@ const duplicatedIcons = computed(() => {
   return result
 })
 
-const translateX = computed(() => {
-  return position.value
-})
-
-const singleSetWidth = icons.length * itemWidth
-
 const setCarouselSpeed = (speed) => {
-  carouselSpeed.value = speed
-}
-
-const startCarousel = () => {
-  const animate = () => {
-    position.value += carouselSpeed.value
-
-    if (position.value >= singleSetWidth) {
-      position.value = 0
-    }
-
-    animationId = requestAnimationFrame(animate)
-  }
-  animationId = requestAnimationFrame(animate)
-}
-
-const stopCarousel = () => {
-  if (animationId) {
-    cancelAnimationFrame(animationId)
-    animationId = null
+  if (carouselTrack.value) {
+    const duration = 15 / speed
+    carouselTrack.value.style.animationDuration = `${duration}s`
   }
 }
-
-onMounted(() => {
-  startCarousel()
-})
-
-onUnmounted(() => {
-  stopCarousel()
-})
 
 defineExpose({
   setCarouselSpeed
@@ -174,6 +139,16 @@ defineExpose({
   align-items: center;
   height: 100%;
   will-change: transform;
+  animation: carouselMove 37.5s infinite linear;
+}
+
+@keyframes carouselMove {
+  0% {
+    transform: translateX(-180px); /* -60px * 3 icons = -180px */
+  }
+  100% {
+    transform: translateX(0px);
+  }
 }
 
 .carousel-item {
@@ -298,7 +273,7 @@ defineExpose({
   }
 
   .carousel-track {
-    transition: none;
+    animation: none;
   }
 
   .carousel-item {
