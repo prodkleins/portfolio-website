@@ -403,7 +403,7 @@ onUnmounted(() => {
 .copy-notification {
   position: absolute;
   left: 50%;
-  top: calc(28% + 1.5rem);
+  bottom: -2.8rem;
   transform: translateX(-50%);
   background: rgba(0, 0, 0, 0.92);
   backdrop-filter: blur(16px);
@@ -411,10 +411,11 @@ onUnmounted(() => {
   border-radius: 12px;
   z-index: 10;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  white-space: nowrap;
 }
 
 .notification-content {
-  padding: 0.5rem 1.1rem;
+  padding: 0.6rem 1.3rem;
   position: relative;
   overflow: hidden;
 }
