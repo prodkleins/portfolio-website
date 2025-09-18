@@ -26,9 +26,9 @@
           <router-link to="/mywork" class="nav-button" :class="{ 'active-page': $route.name === 'mywork' }">
             {{ $t('navigation.mywork') }}
           </router-link>
-          <router-link to="/contact" class="nav-button" :class="{ 'active-page': $route.name === 'contact' }">
-            {{ $t('navigation.contact') }}
-          </router-link>
+          <a href="https://payhip.com/kleins" target="_blank" rel="noopener noreferrer" class="nav-button">
+            {{ $t('navigation.payhip') }}
+          </a>
         </div>
       </div>
       <div class="navbar-lang-dropdown">
