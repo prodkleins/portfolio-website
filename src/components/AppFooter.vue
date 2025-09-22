@@ -107,7 +107,6 @@ defineExpose({
   color: #bfbfbf;
 }
 
-
 .carousel-container {
   display: flex;
   align-items: center;
@@ -209,6 +208,10 @@ defineExpose({
     margin-left: 1rem;
   }
 
+  .carousel-track {
+    animation-duration: 45s;
+  }
+
   .program-icon {
     width: 28px;
     height: 28px;
@@ -263,12 +266,6 @@ defineExpose({
 
   .github-button {
     transition: none;
-  }
-}
-
-@media (max-width: 768px) {
-  .carousel-track {
-    animation-duration: 45s;
   }
 }
 </style>

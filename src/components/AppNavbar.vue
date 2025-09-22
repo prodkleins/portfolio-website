@@ -14,7 +14,7 @@
             <polyline points="8 6 2 12 8 18"></polyline>
           </svg>
         </div>
-        <a href="https://t.me/aerthion" target="_blank" rel="noopener noreferrer" class="developer-link">
+        <a href="https://t.me/piratism" target="_blank" rel="noopener noreferrer" class="developer-link">
           developed by lxngren
         </a>
       </div>

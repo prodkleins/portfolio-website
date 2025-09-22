@@ -36,7 +36,7 @@
     height: 40px;
     border-radius: 10px;
     overflow: hidden;
-    transition: width 0.45s cubic-bezier(0.22, 1.3, 0.36, 1);
+    transition: width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
     position: relative;
     background: rgba(1, 2, 1, 0.9);
 }
@@ -70,16 +70,18 @@
     font-weight: 400;
     font-size: 0.85rem;
     opacity: 0;
-    transition: opacity 0.25s ease, color 0.25s ease;
+    transition: opacity 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), color 0.25s ease;
     text-decoration: none;
     display: flex;
     align-items: center;
     white-space: nowrap;
     cursor: pointer;
+    transition-delay: 0s;
 }
 
 .developer-container:hover .developer-link {
     opacity: 1;
+    transition-delay: 0.1s;
 }
 
 .developer-link:hover {
@@ -123,15 +125,15 @@
     overflow: hidden;
     background: #000;
     transform: translateX(-15px);
-    transition: width 0.28s cubic-bezier(0.68, -0.55, 0.27, 1.55),
-    border-radius 0.28s cubic-bezier(0.68, -0.55, 0.27, 1.55),
-    transform 0.28s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    transition: width 0.35s cubic-bezier(0.25, 0.8, 0.25, 1),
+    border-radius 0.35s cubic-bezier(0.25, 0.8, 0.25, 1),
+    transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .navbar-lang-dropdown:hover {
     width: 80px;
     border-radius: 24px;
-    transform: translateX(-3px);
+    transform: translateX(-20px);
 }
 
 .lang-select {
@@ -148,6 +150,10 @@
     background: transparent;
     border: none;
     pointer-events: auto;
+    transition: transform 0.25s ease;
+}
+
+.navbar-lang-dropdown:hover .lang-select {
 }
 
 .lang-dropdown {
@@ -162,14 +168,16 @@
     cursor: pointer;
     opacity: 0;
     transform: translateX(8px) scale(0.96);
-    transition: opacity 0.18s ease,
-    transform 0.28s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    transition: opacity 0.25s cubic-bezier(0.25, 0.8, 0.25, 1),
+    transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
     z-index: 1;
+    transition-delay: 0s;
 }
 
 .navbar-lang-dropdown:hover .lang-dropdown {
     opacity: 1;
     transform: translateX(0) scale(1);
+    transition-delay: 0.1s;
 }
 
 .lang-option {
@@ -182,6 +190,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: transform 0.2s ease;
+}
+
+.lang-option:hover {
+    transform: scale(1.1);
 }
 
 /* Стили для изображений флагов */
@@ -190,6 +203,12 @@
     background: transparent;
     border-radius: 0;
     display: block;
+    transition: filter 0.2s ease;
+}
+
+.lang-select img:hover,
+.lang-option img:hover {
+    filter: brightness(1.2);
 }
 
 /* планшетная адаптация */
@@ -232,12 +251,16 @@
         margin-right: 0.5rem;
         display: inline-flex;
         vertical-align: middle;
+        transition: width 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
 
     .navbar-lang-dropdown {
         order: 3;
         display: inline-flex;
         vertical-align: middle;
+        transform: none; /* Убираем сдвиг на планшетах */
+        transition: width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
+        border-radius 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
 
     /* скрываем мобильную группу */
@@ -250,12 +273,18 @@
     }
 
     .navbar-lang-dropdown:hover {
-        transform: none;
+        transform: none; /* без сдвига на планшетах */
+    }
+
+    .navbar-lang-dropdown:hover .lang-select {
+        transform: scale(1.05); /* без компенсации сдвига - нет необходимости в этом */
     }
 
     .lang-dropdown {
         transform: translateX(0) scale(0.92);
         width: 36px;
+        transition: opacity 0.2s cubic-bezier(0.25, 0.8, 0.25, 1),
+        transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
 }
 
@@ -283,9 +312,12 @@
     .navbar-mobile-controls .developer-container:hover {
         width: 160px;
         transform: translateX(-120px);
+        transition: width 0.35s cubic-bezier(0.25, 0.8, 0.25, 1),
+        transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
 
     .navbar-mobile-controls .navbar-lang-dropdown:hover {
         width: 70px;
+        transition: width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
 }
