@@ -179,24 +179,43 @@ defineExpose({
   transform: translateZ(0) scale(1.2) translateY(-1px);
 }
 
+@media (max-width: 1200px) {
+  .footer-left {
+    max-width: calc(50vw - 100px);
+  }
+
+  .gradient-text {
+    font-size: 0.75rem;
+    white-space: normal;
+    line-height: 1.3;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+
+  .carousel-container {
+    width: 160px;
+  }
+}
+
 @media (max-width: 768px) {
   .footer-content {
     padding: 0 1rem;
-  }
-
-  .footer-left {
-    left: 1rem;
-    max-width: calc(100vw - 200px);
   }
 
   .footer-right {
     right: 1rem;
   }
 
+  .footer-left {
+    left: 0.8rem;
+    max-width: calc(45vw - 20px);
+  }
+
   .gradient-text {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     white-space: normal;
-    line-height: 1.3;
+    line-height: 1.2;
     word-wrap: break-word;
     overflow-wrap: break-word;
     hyphens: auto;
@@ -206,10 +225,6 @@ defineExpose({
     width: 140px;
     height: 36px;
     margin-left: 1rem;
-  }
-
-  .carousel-track {
-    animation-duration: 45s;
   }
 
   .program-icon {
