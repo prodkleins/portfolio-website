@@ -7,7 +7,7 @@
   "search": {
     "placeholder": "Поиск..."
   },
-  "home":{
+  "home": {
     "business-inquiries": "По коммерческим офертам: {'prodkleins@gmail.com'}",
     "latest-works": "Последние работы"
   },
@@ -22,6 +22,10 @@
     "subcategories": {
       "cs2": "Counter-Strike: 2",
       "tankionline": "Tanki Online"
+    },
+    "youtube": {
+      "description-undefined": "Описание недоступно.",
+      "title-undefined": "Название недоступно."
     }
   }
 }

@@ -343,7 +343,7 @@ class AutoCleanupManager {
             if (!this.destroyed) {
                 const cleaned = this.playerRegistry.cleanupInactive();
                 if (cleaned > 0) {
-                    console.log(`🧹 Auto-cleaned ${cleaned} inactive players`);
+                    console.log(`Auto-cleaned ${cleaned} inactive players`);
                 }
             }
         }, this.config.CLEANUP_INTERVAL);

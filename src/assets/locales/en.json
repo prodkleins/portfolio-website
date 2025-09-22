@@ -7,7 +7,7 @@
   "search": {
     "placeholder": "Search..."
   },
-  "home":{
+  "home": {
     "business-inquiries": "For commissions: {'prodkleins@gmail.com'}",
     "latest-works": "Latest works"
   },
@@ -23,5 +23,9 @@
       "cs2": "Counter-Strike: 2",
       "tankionline": "Tanki Online"
     }
+  },
+  "youtube": {
+      "description-undefined": "Description unavailable.",
+      "title-undefined": "Untitled."
   }
 }

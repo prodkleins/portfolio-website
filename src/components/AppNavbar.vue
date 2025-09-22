@@ -49,6 +49,7 @@
 import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import youtubeService from "@/services/youtubeService.js";
 
 const route = useRoute()
 const { locale } = useI18n()
@@ -64,6 +65,7 @@ const alternativeFlag = computed(() => flags[alternativeLocale.value])
 
 function toggleLocale() {
   locale.value = (locale.value === 'en' ? 'ru' : 'en')
+  youtubeService.clearCache()
   try {
     localStorage.setItem('locale', locale.value)
   } catch {

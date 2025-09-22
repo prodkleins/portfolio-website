@@ -25,7 +25,7 @@ const GLOBAL_PLAYER_STATE = {
  */
 class PlayerConfig {
     constructor(options = {}) {
-        this.CLEANUP_DELAY = 10000; // 10 seconds
+        this.CLEANUP_DELAY = 10000;
         this.DEBOUNCE_DELAY = 300;
         this.INTERACTION_DELAY = 50;
 
@@ -365,9 +365,6 @@ class InteractionManager {
     }
 }
 
-/**
- * Main useYouTubePlayer Composable - МИНИМАЛЬНЫЕ изменения
- */
 export function useYouTubePlayer(videoId, activeCategoryRef, options = {}) {
     const config = new PlayerConfig(options);
     const playerId = `player-${videoId}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;

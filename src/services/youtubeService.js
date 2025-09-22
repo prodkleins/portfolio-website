@@ -282,6 +282,8 @@ class YouTubeAPI {
     }
 }
 
+import i18n from '@/i18n.js'
+
 class VideoDataTransformer {
     constructor(config) {
         this.config = config;
@@ -298,15 +300,15 @@ class VideoDataTransformer {
         return {
             id: config.id,
             youtubeId: apiData.id,
-            title: snippet.title || 'Название недоступно',
-            description: this._truncateText(snippet.description || 'Описание недоступно'),
+            title: snippet.title || i18n.global.t('youtube.title-undefined'),
+            description: this._truncateText(snippet.description || i18n.global.t('youtube.description-undefined')),
             thumbnails: snippet.thumbnails || this._getDefaultThumbnails(apiData.id),
             views: this._parseNumber(statistics.viewCount),
             likes: this._parseNumber(statistics.likeCount),
             comments: this._parseNumber(statistics.commentCount),
             duration: this._formatDuration(contentDetails.duration),
             publishedAt: snippet.publishedAt || null,
-            channelTitle: snippet.channelTitle || 'Неизвестный канал'
+            channelTitle: snippet.channelTitle || 'Undefined channel title'
         };
     }
 
@@ -318,15 +320,15 @@ class VideoDataTransformer {
         return {
             id: config.id,
             youtubeId: config.youtubeId,
-            title: 'Загрузка...',
-            description: 'Загрузка описания...',
+            title: '...', // перевод не требуется
+            description: '...',
             thumbnails: this._getDefaultThumbnails(config.youtubeId),
             views: 'N/A',
             likes: 'N/A',
             comments: 'N/A',
             duration: 'N/A',
             publishedAt: null,
-            channelTitle: 'Загрузка...'
+            channelTitle: '...'
         };
     }
 
