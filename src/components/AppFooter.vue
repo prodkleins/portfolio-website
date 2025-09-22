@@ -104,25 +104,9 @@ defineExpose({
   font-size: 0.9rem;
   font-weight: 400;
   font-family: 'Montserrat', sans-serif;
-  background: linear-gradient(
-    90deg,
-    #fff 0%,
-    #bfbfbf 25%,
-    #fff 50%,
-    #bfbfbf 75%,
-    #fff 100%
-  );
-  background-size: 200% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: textShimmer 6s infinite linear;
+  color: #bfbfbf;
 }
 
-@keyframes textShimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
 
 .carousel-container {
   display: flex;
@@ -144,10 +128,10 @@ defineExpose({
 
 @keyframes carouselMove {
   0% {
-    transform: translateX(-180px); /* -60px * 3 icons = -180px */
+    transform: translate3d(-180px, 0, 0);
   }
   100% {
-    transform: translateX(0px);
+    transform: translate3d(0px, 0, 0);
   }
 }
 
@@ -164,7 +148,9 @@ defineExpose({
   width: 32px;
   height: 32px;
   filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
-  -webkit-filter: grayscale(75%)
+  -webkit-filter: grayscale(75%);
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
 .footer-right {
@@ -186,6 +172,7 @@ defineExpose({
   color: #bfbfbf;
   text-decoration: none;
   transition: all 0.3s ease;
+  will-change: transform, color;
 }
 
 .github-button:hover {
@@ -266,18 +253,22 @@ defineExpose({
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .gradient-text {
-    animation: none;
-    background: #fff;
-    -webkit-text-fill-color: #fff;
-  }
-
   .carousel-track {
     animation: none;
   }
 
   .carousel-item {
     transition: none;
+  }
+
+  .github-button {
+    transition: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .carousel-track {
+    animation-duration: 45s;
   }
 }
 </style>

@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <AppFooter />
     <CapybaraLoader @loaded="onLoaderComplete" />
     <div :class="['main-content', { 'content-fade-in': !showContent, 'content-fade-in visible': showContent }]">
       <AppNavbar />
