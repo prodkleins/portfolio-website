@@ -219,13 +219,13 @@ const initTypewriter = () => {
 
   typeitInstance = new TypeIt(descriptionText.value, {
     strings: descriptions,
-    speed: 180,
+    speed: 90,
     deleteSpeed: 45,
     lifeLike: true,
     breakLines: false,
-    nextStringDelay: 2500,
+    nextStringDelay: 1250,
     loop: true,
-    loopDelay: [0, 350],
+    loopDelay: [0, 250],
     waitUntilVisible: true,
     cursor: false
   }).go()
