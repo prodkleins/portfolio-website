@@ -12,7 +12,8 @@ class VideoCategoriesConfig {
     static DEFAULT = Object.freeze({
         REQUEST_TIMEOUT: 30000,
         MAX_CACHE_SIZE: 3,
-        CONFIG_PATH: '/videos-config.json'
+        CONFIG_PATH: '/videos-config.json',
+        SORT_BY_DATE: true
     });
 
     constructor(options = {}) {
@@ -103,6 +104,45 @@ class ConfigLoader {
     }
 }
 
+class VideoSorter {
+    /**
+     * Сортирует видео по дате публикации (от новых к старым)
+     * @param {Array} videos - Массив видео
+     * @returns {Array} Отсортированный массив видео
+     */
+    static sortByDate(videos) {
+        if (!Array.isArray(videos) || videos.length === 0) {
+            return videos;
+        }
+
+        return videos.slice().sort((a, b) => {
+            const dateA = a.publishedAt ? new Date(a.publishedAt) : new Date(0);
+            const dateB = b.publishedAt ? new Date(b.publishedAt) : new Date(0);
+
+            return dateB - dateA;
+        });
+    }
+
+    /**
+     * Сортирует все видео в группированных данных по подкатегориям
+     * @param {Object} groupedData - Данные, группированные по подкатегориям
+     * @returns {Object} Данные с отсортированными видео
+     */
+    static sortGroupedData(groupedData) {
+        if (!groupedData || typeof groupedData !== 'object') {
+            return groupedData;
+        }
+
+        const sortedData = {};
+
+        for (const [subcategoryId, videos] of Object.entries(groupedData)) {
+            sortedData[subcategoryId] = this.sortByDate(videos);
+        }
+
+        return sortedData;
+    }
+}
+
 class VideoDataManager {
     constructor(config) {
         this.config = config;
@@ -165,8 +205,12 @@ class VideoDataManager {
                 return acc;
             }, {});
 
-            this._cacheResult(categoryId, groupedData);
-            return groupedData;
+            const finalData = this.config.SORT_BY_DATE
+                    ? VideoSorter.sortGroupedData(groupedData)
+                    : groupedData;
+
+            this._cacheResult(categoryId, finalData);
+            return finalData;
 
         } catch (error) {
             console.error('Video loading failed:', error);
@@ -388,6 +432,11 @@ export function useVideoCategories(options = {}) {
         return (category?.subcategories?.length || 0) > 1;
     };
 
+    // доп функция для ручной сортировки видео
+    const sortVideosByDate = (videos) => {
+        return VideoSorter.sortByDate(videos);
+    };
+
     const stopWatcher = watch(
             [() => state.activeCategory.value, () => state.configLoaded.value],
             async ([categoryId, configLoaded]) => {
@@ -443,6 +492,7 @@ export function useVideoCategories(options = {}) {
         getCategoryVideoCount,
         getSubcategoryVideoCount,
         hasMultipleSubcategories,
+        sortVideosByDate,
 
         cleanup
     };

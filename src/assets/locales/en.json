@@ -25,7 +25,7 @@
     }
   },
   "youtube": {
-    "description-undefined": "Description unavailable.",
+    "description-undefined": "No description has been added to this video.",
     "title-undefined": "Untitled.",
     "errors": {
       "videoNotFound": "This video is no longer available or has been removed",
