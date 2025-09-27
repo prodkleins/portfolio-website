@@ -1,5 +1,6 @@
 import { ref, watch, onUnmounted } from 'vue'
 import youtubePlayerService from '@/services/youtubePlayerService.js'
+import i18n from '@/i18n.js'
 
 /**
  * Player States Enum
@@ -8,7 +9,35 @@ const PLAYER_STATES = Object.freeze({
     THUMBNAIL: 'thumbnail',
     LOADING: 'loading',
     PLAYER_IDLE: 'player_idle',
-    PLAYER_PLAYING: 'player_playing'
+    PLAYER_PLAYING: 'player_playing',
+    ERROR: 'error'
+});
+
+/**
+ * YouTube Error Types
+ */
+const YOUTUBE_ERROR_TYPES = Object.freeze({
+    INVALID_PARAM: 2,
+    HTML5_ERROR: 5,
+    VIDEO_NOT_FOUND: 100,
+    EMBED_NOT_ALLOWED: 101,
+    EMBED_NOT_ALLOWED_ALT: 150,
+    NETWORK_ERROR: 'network',
+    GEOBLOCKED: 'geoblocked'
+});
+
+/**
+ * Error Messages Map
+ */
+const ERROR_MESSAGES = Object.freeze({
+    [YOUTUBE_ERROR_TYPES.VIDEO_NOT_FOUND]: () => i18n.global.t('youtube.errors.videoNotFound'),
+    [YOUTUBE_ERROR_TYPES.EMBED_NOT_ALLOWED]: () => i18n.global.t('youtube.errors.embedNotAllowed'),
+    [YOUTUBE_ERROR_TYPES.EMBED_NOT_ALLOWED_ALT]: () => i18n.global.t('youtube.errors.embedNotAllowed'),
+    [YOUTUBE_ERROR_TYPES.HTML5_ERROR]: () => i18n.global.t('youtube.errors.playbackError'),
+    [YOUTUBE_ERROR_TYPES.INVALID_PARAM]: () => i18n.global.t('youtube.errors.invalidVideo'),
+    [YOUTUBE_ERROR_TYPES.NETWORK_ERROR]: () => i18n.global.t('youtube.errors.networkError'),
+    [YOUTUBE_ERROR_TYPES.GEOBLOCKED]: () => i18n.global.t('youtube.errors.geoblocked'),
+    default: () => i18n.global.t('youtube.errors.unknown')
 });
 
 /**
@@ -28,6 +57,7 @@ class PlayerConfig {
         this.CLEANUP_DELAY = 10000;
         this.DEBOUNCE_DELAY = 300;
         this.INTERACTION_DELAY = 50;
+        this.ERROR_DISPLAY_TIME = 10000;
 
         Object.assign(this, options);
         Object.freeze(this);
@@ -35,7 +65,7 @@ class PlayerConfig {
 }
 
 /**
- * Resource Manager для очистки
+ * Resource Manager
  */
 class ResourceManager {
     constructor() {
@@ -100,12 +130,26 @@ class ResourceManager {
 class PlayerStateManager {
     constructor(initialState = PLAYER_STATES.THUMBNAIL) {
         this.state = ref(initialState);
+        this.error = ref(null);
         this.destroyed = false;
     }
 
     setState(newState) {
         if (this.destroyed) return false;
         this.state.value = newState;
+        return true;
+    }
+
+    setError(errorData) {
+        if (this.destroyed) return false;
+        this.error.value = errorData;
+        this.setState(PLAYER_STATES.ERROR);
+        return true;
+    }
+
+    clearError() {
+        if (this.destroyed) return false;
+        this.error.value = null;
         return true;
     }
 
@@ -116,6 +160,7 @@ class PlayerStateManager {
     reset() {
         if (!this.destroyed) {
             this.state.value = PLAYER_STATES.THUMBNAIL;
+            this.clearError();
         }
     }
 
@@ -126,14 +171,95 @@ class PlayerStateManager {
 }
 
 /**
+ * Error Handler
+ */
+class ErrorHandler {
+    constructor(stateManager, resourceManager, config) {
+        this.stateManager = stateManager;
+        this.resourceManager = resourceManager;
+        this.config = config;
+        this.errorHideTimer = null;
+    }
+
+    handleYouTubeError(errorCode) {
+        this._clearErrorTimer();
+
+        const errorType = this._mapErrorCode(errorCode);
+        const message = this._getErrorMessage(errorType);
+
+        const errorData = {
+            type: errorType,
+            code: errorCode,
+            message,
+            timestamp: Date.now(),
+            canRetry: this._canRetry(errorType)
+        };
+
+        this.stateManager.setError(errorData);
+
+        this.errorHideTimer = this.resourceManager.addTimer(setTimeout(() => {
+            if (this.stateManager.is(PLAYER_STATES.ERROR)) {
+                this.stateManager.reset();
+            }
+            this.errorHideTimer = null;
+        }, this.config.ERROR_DISPLAY_TIME));
+
+        return errorData;
+    }
+
+    _clearErrorTimer() {
+        if (this.errorHideTimer) {
+            clearTimeout(this.errorHideTimer);
+            this.errorHideTimer = null;
+        }
+    }
+
+    _mapErrorCode(code) {
+        if (this._isLikelyGeoblocked(code)) {
+            return YOUTUBE_ERROR_TYPES.GEOBLOCKED;
+        }
+
+        return YOUTUBE_ERROR_TYPES[code] !== undefined ? code : 'unknown';
+    }
+
+    _isLikelyGeoblocked(code) {
+        if (code === YOUTUBE_ERROR_TYPES.EMBED_NOT_ALLOWED ||
+                code === YOUTUBE_ERROR_TYPES.EMBED_NOT_ALLOWED_ALT) {
+
+            return navigator.language &&
+                    (navigator.language.includes('ru') ||
+                            navigator.language.includes('cn'));
+        }
+        return false;
+    }
+
+    _getErrorMessage(errorType) {
+        const messageGetter = ERROR_MESSAGES[errorType] || ERROR_MESSAGES.default;
+        return messageGetter();
+    }
+
+    _canRetry(errorType) {
+        return errorType !== YOUTUBE_ERROR_TYPES.VIDEO_NOT_FOUND &&
+                errorType !== YOUTUBE_ERROR_TYPES.EMBED_NOT_ALLOWED &&
+                errorType !== YOUTUBE_ERROR_TYPES.EMBED_NOT_ALLOWED_ALT &&
+                errorType !== YOUTUBE_ERROR_TYPES.GEOBLOCKED;
+    }
+
+    destroy() {
+        this._clearErrorTimer();
+    }
+}
+
+/**
  * YouTube Player Lifecycle Manager
  */
 class PlayerLifecycle {
-    constructor(playerId, videoId, stateManager, resourceManager) {
+    constructor(playerId, videoId, stateManager, resourceManager, errorHandler) {
         this.playerId = playerId;
         this.videoId = videoId;
         this.stateManager = stateManager;
         this.resourceManager = resourceManager;
+        this.errorHandler = errorHandler;
         this.player = null;
         this.containerId = null;
         this.destroyed = false;
@@ -146,9 +272,8 @@ class PlayerLifecycle {
 
         try {
             this._forceCleanupAllPlayers();
-
             this._fullCleanup();
-
+            this.stateManager.clearError();
             this.stateManager.setState(PLAYER_STATES.LOADING);
 
             this.containerId = `youtube-player-${this.videoId}-${Date.now()}`;
@@ -183,13 +308,13 @@ class PlayerLifecycle {
             );
 
             GLOBAL_PLAYER_STATE.activePlayer = this.player;
-
             return this.player;
 
         } catch (error) {
             console.error('Player initialization failed:', error);
-            this._fullCleanup();
-            this.stateManager.reset();
+
+            const errorData = this.errorHandler.handleYouTubeError(YOUTUBE_ERROR_TYPES.NETWORK_ERROR);
+
             this._clearGlobalStateIfThis();
             throw error;
         }
@@ -221,13 +346,48 @@ class PlayerLifecycle {
     }
 
     _handlePlayerError(event) {
-        this._returnToThumbnail();
+        if (this.destroyed || !event) return;
+
+        console.warn('YouTube player error:', event.data);
+
+        this.errorHandler.handleYouTubeError(event.data);
+
+        this._destroyCurrentPlayer();
+    }
+
+    _destroyCurrentPlayer() {
+        if (this.player) {
+            try {
+                if (typeof this.player.stopVideo === 'function') {
+                    this.player.stopVideo();
+                }
+                if (typeof this.player.destroy === 'function') {
+                    this.player.destroy();
+                }
+            } catch (error) {
+                console.warn('Error destroying player:', error);
+            }
+        }
+
+        if (this.containerId) {
+            try {
+                youtubePlayerService.destroyPlayer(this.containerId);
+            } catch (error) {
+                console.warn('Error destroying player service:', error);
+            }
+
+            const element = document.getElementById(this.containerId);
+            if (element) {
+                element.innerHTML = '';
+            }
+        }
+
+        this.player = null;
     }
 
     _startInactivityTimer() {
         this._clearInactivityTimer();
 
-        // ТОЧНО как в оригинале
         this.inactivityTimer = this.resourceManager.addTimer(setTimeout(() => {
             if (!this.destroyed && !this.isHovered) {
                 this._returnToThumbnail();
@@ -245,20 +405,8 @@ class PlayerLifecycle {
     _returnToThumbnail() {
         if (this.destroyed) return;
 
-        if (this.player) {
-            try {
-                if (typeof this.player.stopVideo === 'function') {
-                    this.player.stopVideo();
-                }
-            } catch (error) {
-                console.warn('Error stopping video:', error);
-            }
-        }
-
-        this._fullCleanup();
-
-        this.stateManager.setState(PLAYER_STATES.THUMBNAIL);
-
+        this._destroyCurrentPlayer();
+        this.stateManager.reset();
         this._clearGlobalStateIfThis();
     }
 
@@ -286,26 +434,7 @@ class PlayerLifecycle {
 
     _fullCleanup() {
         this._clearInactivityTimer();
-
-        if (this.containerId) {
-            try {
-                youtubePlayerService.destroyPlayer(this.containerId);
-            } catch (error) {
-                console.warn('Error destroying player service:', error);
-            }
-        }
-
-        if (this.containerId) {
-            const element = document.getElementById(this.containerId);
-            if (element) {
-                element.innerHTML = '';
-                if (element.parentNode) {
-                    element.parentNode.removeChild(element);
-                }
-            }
-        }
-
-        this.player = null;
+        this._destroyCurrentPlayer();
         this.containerId = null;
     }
 
@@ -321,12 +450,13 @@ class PlayerLifecycle {
 
         this.destroyed = true;
         this._fullCleanup();
+        this.errorHandler.destroy();
         this._clearGlobalStateIfThis();
     }
 }
 
 /**
- * Interaction Manager для дебаунсинга
+ * Interaction Manager
  */
 class InteractionManager {
     constructor(resourceManager, config) {
@@ -371,7 +501,8 @@ export function useYouTubePlayer(videoId, activeCategoryRef, options = {}) {
 
     const resourceManager = new ResourceManager();
     const stateManager = new PlayerStateManager();
-    const lifecycle = new PlayerLifecycle(playerId, videoId, stateManager, resourceManager);
+    const errorHandler = new ErrorHandler(stateManager, resourceManager, config);
+    const lifecycle = new PlayerLifecycle(playerId, videoId, stateManager, resourceManager, errorHandler);
     const interactionManager = new InteractionManager(resourceManager, config);
 
     const isHovered = ref(false);
@@ -387,6 +518,12 @@ export function useYouTubePlayer(videoId, activeCategoryRef, options = {}) {
         userActivityTimer = resourceManager.addTimer(setTimeout(() => {
             userActive.value = false;
         }, 2000));
+    };
+
+    const retryPlayback = () => {
+        if (stateManager.is(PLAYER_STATES.ERROR)) {
+            stateManager.reset();
+        }
     };
 
     const cleanup = () => {
@@ -411,7 +548,6 @@ export function useYouTubePlayer(videoId, activeCategoryRef, options = {}) {
             await lifecycle.initialize(container);
         } catch (error) {
             console.error('Player initialization failed:', error);
-            stateManager.reset();
         }
     };
 
@@ -431,6 +567,10 @@ export function useYouTubePlayer(videoId, activeCategoryRef, options = {}) {
         if (!container) return;
 
         resetUserActivity();
+
+        if (stateManager.is(PLAYER_STATES.ERROR)) {
+            stateManager.reset();
+        }
 
         initializePlayer(container);
     };
@@ -496,6 +636,7 @@ export function useYouTubePlayer(videoId, activeCategoryRef, options = {}) {
 
     return {
         state: stateManager.state,
+        error: stateManager.error,
         isHovered,
         isVisible,
         handleMouseEnter,
@@ -505,6 +646,7 @@ export function useYouTubePlayer(videoId, activeCategoryRef, options = {}) {
         initializePlayer,
         cleanup,
         resetUserActivity,
+        retryPlayback,
         PLAYER_STATES
     };
 }

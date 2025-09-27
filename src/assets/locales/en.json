@@ -25,7 +25,16 @@
     }
   },
   "youtube": {
-      "description-undefined": "Description unavailable.",
-      "title-undefined": "Untitled."
+    "description-undefined": "Description unavailable.",
+    "title-undefined": "Untitled.",
+    "errors": {
+      "videoNotFound": "This video is no longer available or has been removed",
+      "embedNotAllowed": "This video cannot be played in embedded players",
+      "playbackError": "Unable to play this video. Please try again later",
+      "invalidVideo": "Invalid video or corrupted data",
+      "networkError": "Network connection error. Please check your internet connection",
+      "geoblocked": "This video is not available in your region or YouTube access is restricted",
+      "unknown": "An unexpected error occurred while loading the video"
+    }
   }
 }
