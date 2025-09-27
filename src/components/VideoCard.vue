@@ -311,8 +311,9 @@ if (import.meta.hot) {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 1.5rem;
-  max-width: 90%;
+  padding: 1rem;
+  max-width: 80%;
+  transform: scale(0.9);
 }
 
 .error-icon-wrapper {
@@ -323,8 +324,8 @@ if (import.meta.hot) {
 }
 
 .error-icon {
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2rem;
+  height: 2rem;
   color: rgba(255, 107, 107, 0.8);
   filter: drop-shadow(0 2px 4px rgba(255, 107, 107, 0.3));
 }
@@ -379,12 +380,13 @@ if (import.meta.hot) {
 
 @media (max-width: 480px) {
   .error-content {
-    padding: 1rem;
+    padding: 0.75rem;
+    transform: scale(0.85);
   }
 
   .error-icon {
-    width: 2rem;
-    height: 2rem;
+    width: 1.75rem;
+    height: 1.75rem;
   }
 
   .error-text {
