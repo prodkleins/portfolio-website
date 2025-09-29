@@ -41,12 +41,14 @@
             v-if="!deviceState.isMobile && hasMultipleSubcategories(category.id)"
             class="dropdown-menu"
             :class="{ visible: uiState.dropdowns[category.id] }"
+            @mouseenter="handleDropdownMouseEnter(category.id)"
+            @mouseleave="handleDropdownMouseLeave(category.id)"
           >
             <button
               v-for="subcategory in category.subcategories"
               :key="subcategory.id"
               class="dropdown-item"
-              @click="scrollToSubcategory(subcategory.id)"
+              @click="handleSubcategoryClick(category.id, subcategory.id)"
             >
               <span>{{ getSubcategoryLabel(subcategory.id) }}</span>
               <span class="subcategory-count">{{ getSubcategoryVideoCount(category.id, subcategory.id) }}</span>
@@ -339,6 +341,26 @@ const handleCategoryMouseLeave = (categoryId) => {
   }, 300);
 };
 
+const handleDropdownMouseEnter = (categoryId) => {
+  if (deviceState.isMobile) return;
+
+  const leaveKey = `mouseleave_${categoryId}`;
+  if (uiStateManager.timers.has(leaveKey)) {
+    clearTimeout(uiStateManager.timers.get(leaveKey));
+    uiStateManager.timers.delete(leaveKey);
+  }
+
+  uiStateManager.setDropdown(categoryId, true);
+};
+
+const handleDropdownMouseLeave = (categoryId) => {
+  if (deviceState.isMobile) return;
+
+  uiStateManager.debounceAction(`mouseleave_${categoryId}`, () => {
+    uiStateManager.setDropdown(categoryId, false);
+  }, 300);
+};
+
 const handleCategoryClick = async (categoryId) => {
   if (!deviceState.isMobile) {
     uiStateManager.closeAllDropdowns();
@@ -348,6 +370,22 @@ const handleCategoryClick = async (categoryId) => {
     await setActiveCategory(categoryId);
   } catch (error) {
     console.error('Error setting category:', error);
+  }
+};
+
+const handleSubcategoryClick = async (categoryId, subcategoryId) => {
+  uiStateManager.closeAllDropdowns();
+
+  try {
+    if (activeCategory.value !== categoryId) {
+      await setActiveCategory(categoryId);
+
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+
+    await scrollManager.scrollToSubcategory(subcategoryId);
+  } catch (error) {
+    console.error('Error navigating to subcategory:', error);
   }
 };
 

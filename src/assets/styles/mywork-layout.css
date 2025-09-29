@@ -157,7 +157,7 @@
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 12px;
     padding: 0.5rem 0;
-    margin-top: 0.5rem;
+    margin-top: 0.3rem;
     min-width: 200px;
     backdrop-filter: blur(20px);
     box-shadow:
@@ -168,6 +168,7 @@
     transform: translateX(-50%) translateY(-10px);
     transition: all 0.3s ease;
     z-index: 1000;
+    pointer-events: none;
 }
 
 .dropdown-menu::before {
@@ -183,10 +184,21 @@
     border-bottom: 8px solid rgba(0, 0, 0, 0.95);
 }
 
+.dropdown-menu::after {
+    content: '';
+    position: absolute;
+    top: -0.3rem;
+    left: 0;
+    right: 0;
+    height: 0.3rem;
+    background: transparent;
+}
+
 .dropdown-menu.visible {
     opacity: 1;
     visibility: visible;
     transform: translateX(-50%) translateY(0);
+    pointer-events: auto;
 }
 
 .dropdown-item {
