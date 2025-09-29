@@ -271,8 +271,22 @@
     left: 50%;
     transform: translateX(-50%);
     width: 60px;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+}
+
+.subcategory-title::before {
+    content: '';
+    position: absolute;
+    bottom: calc(-0.5rem - 0.5px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 3px;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
+    z-index: 1;
 }
 
 /* ===========================================
