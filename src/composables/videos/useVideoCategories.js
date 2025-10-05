@@ -1,6 +1,7 @@
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import youtubeService from '@/services/youtubeService.js'
+import gistService from '@/services/gistService.js'
 
 /**
  * @typedef {Object} Category
@@ -12,8 +13,9 @@ class VideoCategoriesConfig {
     static DEFAULT = Object.freeze({
         REQUEST_TIMEOUT: 30000,
         MAX_CACHE_SIZE: 3,
-        CONFIG_PATH: '/videos-config.json',
-        SORT_BY_DATE: true
+        SORT_BY_DATE: true,
+        USE_GIST: true,
+        FALLBACK_TO_LOCAL: true
     });
 
     constructor(options = {}) {
@@ -30,14 +32,17 @@ class CategoryNormalizer {
     static normalize(category) {
         if (!category?.id) return null;
 
-        if (category.subcategories?.length > 0) {
+        const hasSubcategories = category.subcategories?.length > 0;
+        const hasVideos = category.videos?.length > 0;
+
+        if (hasSubcategories) {
             return {
                 id: category.id,
                 subcategories: category.subcategories
             };
         }
 
-        if (category.videos?.length > 0) {
+        if (hasVideos) {
             return {
                 id: category.id,
                 subcategories: [{
@@ -58,12 +63,20 @@ class ConfigLoader {
     constructor(config) {
         this.config = config;
         this.abortController = null;
+        this.isLoading = false;
     }
 
     /**
      * @returns {Promise<Category[]>}
      */
     async loadCategories() {
+        if (this.isLoading) {
+            console.log('Categories loading already in progress, skipping...');
+            return null;
+        }
+
+        this.isLoading = true;
+
         if (this.abortController) {
             this.abortController.abort();
         }
@@ -71,7 +84,35 @@ class ConfigLoader {
         this.abortController = new AbortController();
 
         try {
-            const response = await fetch(this.config.CONFIG_PATH, {
+            return this.config.USE_GIST
+                    ? await this._loadFromGist()
+                    : await this._loadLocalConfig();
+        } finally {
+            this.isLoading = false;
+        }
+    }
+
+    async _loadFromGist() {
+        try {
+            console.log('Loading categories from Gist...');
+            const data = await gistService.getVideosConfig();
+            return this._normalizeCategories(data.categories);
+        } catch (error) {
+            console.warn('Failed to load from Gist:', error);
+
+            if (this.config.FALLBACK_TO_LOCAL) {
+                return this._loadLocalConfig();
+            }
+
+            throw error;
+        }
+    }
+
+    async _loadLocalConfig() {
+        try {
+            console.log('Loading categories from local file...');
+
+            const response = await fetch('/videos-config.json', {
                 signal: this.abortController.signal,
                 cache: 'default'
             });
@@ -81,19 +122,22 @@ class ConfigLoader {
             }
 
             const data = await response.json();
-
-            return (data.categories || [])
-                    .map(CategoryNormalizer.normalize)
-                    .filter(Boolean);
+            return this._normalizeCategories(data.categories);
 
         } catch (error) {
             if (error.name === 'AbortError') {
                 throw error;
             }
 
-            console.error('Config loading failed:', error);
+            console.error('Local config loading failed:', error);
             throw new Error(`Failed to load categories: ${error.message}`);
         }
+    }
+
+    _normalizeCategories(categories) {
+        return (categories || [])
+                .map(CategoryNormalizer.normalize)
+                .filter(Boolean);
     }
 
     abort() {
@@ -101,6 +145,7 @@ class ConfigLoader {
             this.abortController.abort();
             this.abortController = null;
         }
+        this.isLoading = false;
     }
 }
 
@@ -118,7 +163,6 @@ class VideoSorter {
         return videos.slice().sort((a, b) => {
             const dateA = a.publishedAt ? new Date(a.publishedAt) : new Date(0);
             const dateB = b.publishedAt ? new Date(b.publishedAt) : new Date(0);
-
             return dateB - dateA;
         });
     }
@@ -133,13 +177,10 @@ class VideoSorter {
             return groupedData;
         }
 
-        const sortedData = {};
-
-        for (const [subcategoryId, videos] of Object.entries(groupedData)) {
-            sortedData[subcategoryId] = this.sortByDate(videos);
-        }
-
-        return sortedData;
+        return Object.entries(groupedData).reduce((acc, [subcategoryId, videos]) => {
+            acc[subcategoryId] = this.sortByDate(videos);
+            return acc;
+        }, {});
     }
 }
 
@@ -179,12 +220,7 @@ class VideoDataManager {
 
     async _performLoad(categoryId, category) {
         try {
-            const videoConfigs = category.subcategories.flatMap(sub =>
-                    (sub.videos || []).map(video => ({
-                        ...video,
-                        subcategoryId: sub.id
-                    }))
-            );
+            const videoConfigs = this._extractVideoConfigs(category);
 
             if (videoConfigs.length === 0) {
                 const emptyResult = {};
@@ -193,18 +229,7 @@ class VideoDataManager {
             }
 
             const videoData = await youtubeService.getCategoryVideosData(videoConfigs);
-
-            const groupedData = videoData.reduce((acc, video) => {
-                const config = videoConfigs.find(cfg => cfg.id === video.id);
-                if (config?.subcategoryId) {
-                    if (!acc[config.subcategoryId]) {
-                        acc[config.subcategoryId] = [];
-                    }
-                    acc[config.subcategoryId].push(video);
-                }
-                return acc;
-            }, {});
-
+            const groupedData = this._groupVideosBySubcategory(videoData, videoConfigs);
             const finalData = this.config.SORT_BY_DATE
                     ? VideoSorter.sortGroupedData(groupedData)
                     : groupedData;
@@ -218,13 +243,32 @@ class VideoDataManager {
         }
     }
 
+    _extractVideoConfigs(category) {
+        return category.subcategories.flatMap(sub =>
+                (sub.videos || []).map(video => ({
+                    ...video,
+                    subcategoryId: sub.id
+                }))
+        );
+    }
+
+    _groupVideosBySubcategory(videoData, videoConfigs) {
+        return videoData.reduce((acc, video) => {
+            const config = videoConfigs.find(cfg => cfg.id === video.id);
+            if (config?.subcategoryId) {
+                acc[config.subcategoryId] = acc[config.subcategoryId] || [];
+                acc[config.subcategoryId].push(video);
+            }
+            return acc;
+        }, {});
+    }
+
     _cacheResult(categoryId, data) {
         // Управление размером кэша
         if (this.cache.size >= this.config.MAX_CACHE_SIZE) {
             const firstKey = this.cache.keys().next().value;
             this.cache.delete(firstKey);
         }
-
         this.cache.set(categoryId, data);
     }
 
@@ -251,17 +295,15 @@ class VideoDataManager {
 class VideoCategoriesState {
     constructor(config) {
         this.config = config;
-
         this.categories = ref([]);
         this.activeCategory = ref(null);
         this.loading = ref(false);
         this.error = ref(null);
         this.configLoaded = ref(false);
-
         this.configLoader = new ConfigLoader(config);
         this.videoDataManager = new VideoDataManager(config);
-
         this.destroyed = false;
+        this.updateUnsubscribe = null;
     }
 
     async loadCategories() {
@@ -273,7 +315,7 @@ class VideoCategoriesState {
         try {
             const categories = await this.configLoader.loadCategories();
 
-            if (this.destroyed) return;
+            if (this.destroyed || !categories) return;
 
             this.categories.value = categories;
 
@@ -298,15 +340,13 @@ class VideoCategoriesState {
     }
 
     async loadCategoryVideos(categoryId) {
-        if (this.destroyed || !categoryId) return;
+        if (this.destroyed || !categoryId || this.videoDataManager.has(categoryId)) {
+            return;
+        }
 
         const category = this.categories.value.find(cat => cat.id === categoryId);
         if (!category) {
             console.warn('Category not found:', categoryId);
-            return;
-        }
-
-        if (this.videoDataManager.has(categoryId)) {
             return;
         }
 
@@ -330,21 +370,24 @@ class VideoCategoriesState {
     async setActiveCategory(categoryId) {
         if (this.destroyed || this.activeCategory.value === categoryId) return;
 
-        const oldCategory = this.activeCategory.value;
-        if (oldCategory && oldCategory !== categoryId) {
-            this.videoDataManager.cache.delete(oldCategory);
-
-            try {
-                const { default: youtubePlayerService } = await import('@/services/youtubePlayerService.js');
-                youtubePlayerService.cleanup();
-            } catch (error) {
-                console.warn('Error cleaning up YouTube players:', error);
-            }
-        }
-
+        await this._cleanupOldCategory(this.activeCategory.value, categoryId);
         this.activeCategory.value = categoryId;
+
         if (!this.videoDataManager.has(categoryId)) {
             await this.loadCategoryVideos(categoryId);
+        }
+    }
+
+    async _cleanupOldCategory(oldCategory, newCategory) {
+        if (!oldCategory || oldCategory === newCategory) return;
+
+        this.videoDataManager.cache.delete(oldCategory);
+
+        try {
+            const { default: youtubePlayerService } = await import('@/services/youtubePlayerService.js');
+            youtubePlayerService.cleanup();
+        } catch (error) {
+            console.warn('Error cleaning up YouTube players:', error);
         }
     }
 
@@ -360,9 +403,37 @@ class VideoCategoriesState {
                 : null;
     }
 
+    async reloadFromGist() {
+        if (this.destroyed) return;
+
+        console.log('Reloading configuration from Gist...');
+        gistService.clearCache();
+        this.videoDataManager.clear();
+
+        await this.loadCategories();
+
+        if (this.activeCategory.value) {
+            await this.loadCategoryVideos(this.activeCategory.value);
+        }
+
+        console.log('Configuration reloaded successfully');
+    }
+
+    subscribeToUpdates() {
+        this.updateUnsubscribe = gistService.onUpdate(() => {
+            console.log('Gist updated, reloading data...');
+            this.reloadFromGist();
+        });
+    }
+
     destroy() {
         if (this.destroyed) return;
         this.destroyed = true;
+
+        if (this.updateUnsubscribe) {
+            this.updateUnsubscribe();
+            this.updateUnsubscribe = null;
+        }
 
         this.configLoader.abort();
         this.videoDataManager.destroy();
@@ -432,10 +503,8 @@ export function useVideoCategories(options = {}) {
         return (category?.subcategories?.length || 0) > 1;
     };
 
-    // доп функция для ручной сортировки видео
-    const sortVideosByDate = (videos) => {
-        return VideoSorter.sortByDate(videos);
-    };
+    const sortVideosByDate = (videos) => VideoSorter.sortByDate(videos);
+    const reloadFromGist = async () => await state.reloadFromGist();
 
     const stopWatcher = watch(
             [() => state.activeCategory.value, () => state.configLoaded.value],
@@ -459,6 +528,7 @@ export function useVideoCategories(options = {}) {
     };
 
     onMounted(() => {
+        state.subscribeToUpdates();
         state.loadCategories().catch(error => {
             console.error('Initial categories loading failed:', error);
         });
@@ -486,6 +556,7 @@ export function useVideoCategories(options = {}) {
 
         setActiveCategory: (id) => state.setActiveCategory(id),
         loadCategoryVideos: (id) => state.loadCategoryVideos(id),
+        reloadFromGist,
 
         getCategoryLabel,
         getSubcategoryLabel,

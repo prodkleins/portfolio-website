@@ -6,6 +6,7 @@
       <AppNavbar />
       <router-view />
     </div>
+    <AdminPanel ref="adminPanel" />
   </div>
 </template>
 
@@ -14,8 +15,11 @@ import { ref, onMounted, onUnmounted, watch } from 'vue'
 import AppNavbar from './components/AppNavbar.vue'
 import AppFooter from './components/AppFooter.vue'
 import CapybaraLoader from './components/CapybaraLoader.vue'
+import AdminPanel from './components/AdminPanel.vue'
+import adminHelper from './utils/adminHelper.js'
 
 const showContent = ref(false)
+const adminPanel = ref(null)
 let timeoutId = null
 
 const onLoaderComplete = () => {
@@ -33,6 +37,10 @@ const stopWatcher = watch(showContent, (newValue) => {
 
 onMounted(() => {
   document.body.style.overflow = 'hidden'
+
+  if (adminPanel.value) {
+    adminHelper.init(adminPanel.value)
+  }
 })
 
 onUnmounted(() => {
@@ -44,6 +52,8 @@ onUnmounted(() => {
     stopWatcher()
   }
   document.body.style.overflow = ''
+
+  adminHelper.destroy()
 })
 </script>
 
