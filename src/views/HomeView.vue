@@ -94,7 +94,7 @@
                 </svg>
               </a>
               <a
-                href="https://youtube.com/@kleins0"
+                href="https://youtube.com/@bykleins"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="social-link"
