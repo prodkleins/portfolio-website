@@ -50,7 +50,7 @@
           <div class="social-section">
             <div class="social-links">
               <a
-                href="https://instagram.com/prodkleins"
+                href="https://instagram.com/bykleins"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="social-link"
@@ -63,7 +63,7 @@
                 </svg>
               </a>
               <a
-                href="https://t.me/prodkleins"
+                href="https://t.me/bykleins"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="social-link"
